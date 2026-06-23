@@ -3,164 +3,320 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Life OS</title>
+    <title>Life OS — Premium Dashboard</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
+        :root {
+            --bg-dark: #0A0A0A;
+            --card-bg: rgba(22, 22, 23, 0.6);
+            --border-glow: rgba(255, 255, 255, 0.08);
+            --neon-green: #39FF14;
+            --neon-pink: #FF007F;
+            --apple-blue: #007AFF;
+            --text-gray: #8E8E93;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         body {
-            background-color: #0D0D0C; /* True Dark */
+            background-color: var(--bg-dark);
             color: #FFFFFF;
             padding: 20px;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* Header */
+        /* Glassmorphism Card Style */
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid var(--border-glow);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        /* Header Section */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .user-profile h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
+        .user-profile p { color: var(--text-gray); font-size: 13px; margin-top: 2px; }
+
+        .status-badge {
+            background: linear-gradient(135deg, var(--neon-pink), #7B2CBF);
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            box-shadow: 0 0 15px rgba(255, 0, 127, 0.3);
+        }
+
+        /* 3D Progress Bar */
+        .xp-wrapper {
             margin-bottom: 25px;
         }
-
-        .user-info h2 { font-size: 20px; font-weight: 600; }
-        .user-info p { color: #8E8E93; font-size: 14px; }
-
-        .premium-badge {
-            background: linear-gradient(135deg, #FF007F, #7B2CBF);
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-            box-shadow: 0 0 10px rgba(255, 0, 127, 0.4);
-        }
-
-        /* XP Progress Bar */
-        .xp-container {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .xp-text {
+        .xp-info {
             display: flex;
             justify-content: space-between;
-            font-size: 14px;
+            font-size: 13px;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .xp-bar-container {
+            background: rgba(255, 255, 255, 0.05);
+            height: 10px;
+            border-radius: 30px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .xp-bar-progress {
+            background: linear-gradient(90deg, #00FF87, var(--neon-green));
+            width: 0%;
+            height: 100%;
+            box-shadow: 0 0 10px var(--neon-green);
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Financial Grid (3D Dashboard Look) */
+        .finance-dashboard {
+            text-align: center;
+            padding: 25px 15px;
+        }
+        .finance-dashboard h3 {
+            font-size: 12px;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
             margin-bottom: 8px;
         }
+        .main-balance {
+            font-size: 38px;
+            font-weight: 800;
+            color: #FFFFFF;
+            letter-spacing: -1px;
+        }
+        .finance-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 15px;
+        }
+        .stat-box { width: 48%; }
+        .stat-box p { font-size: 11px; color: var(--text-gray); text-transform: uppercase; }
+        .stat-box span { font-size: 18px; font-weight: 700; display: block; margin-top: 4px; }
+        .stat-income { color: var(--neon-green); }
+        .stat-expense { color: var(--neon-pink); }
 
-        .xp-bar-bg { background: rgba(255, 255, 255, 0.1); height: 8px; border-radius: 4px; overflow: hidden; }
-        .xp-bar-fill {
-            background: #39FF14;
-            width: 0%; /* Dinamik to'ladi */
-            height: 100%;
-            box-shadow: 0 0 8px #39FF14;
-            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        /* Navigation Tabs */
+        .tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.04);
+            padding: 4px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .tab-btn {
+            flex: 1;
+            background: none;
+            border: none;
+            color: var(--text-gray);
+            padding: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 9px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .tab-btn.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: #FFFFFF;
         }
 
-        /* Dashboard Card */
-        .main-card {
+        /* Content Sections */
+        .content-section { display: none; }
+        .content-section.active { display: block; }
+
+        /* Habits Elements */
+        .item-row {
             background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 24px;
-            padding: 25px;
-            text-align: center;
-            margin-bottom: 25px;
-        }
-
-        .main-card h3 { color: #8E8E93; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
-        .balance { font-size: 36px; font-weight: 700; margin-bottom: 5px; color: #39FF14; }
-
-        /* Interaktiv Odatlar Ro'yxati */
-        .section-title { font-size: 18px; font-weight: 600; margin-bottom: 15px; color: #8E8E93; }
-        
-        .habit-item {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 16px;
             padding: 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 12px;
-            transition: all 0.3s ease;
         }
+        .item-info h4 { font-size: 15px; font-weight: 600; }
+        .item-info p { font-size: 12px; color: var(--text-gray); margin-top: 2px; }
 
-        .habit-info h4 { font-size: 16px; font-weight: 500; }
-        .habit-info p { font-size: 12px; color: #8E8E93; margin-top: 2px; }
-
-        .done-btn {
-            background: rgba(57, 255, 20, 0.1);
-            border: 1px solid #39FF14;
-            color: #39FF14;
+        .action-btn {
+            background: rgba(57, 255, 20, 0.08);
+            border: 1px solid var(--neon-green);
+            color: var(--neon-green);
             padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 600;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.2s;
+        }
+        .action-btn.completed {
+            background: var(--neon-green);
+            color: #000000;
+            box-shadow: 0 0 12px var(--neon-green);
         }
 
-        .done-btn:active { transform: scale(0.95); }
-        .done-btn.completed {
-            background: #39FF14;
-            color: #000000;
-            box-shadow: 0 0 10px #39FF14;
+        /* Finance Form Controls */
+        .input-group {
+            margin-bottom: 15px;
         }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: var(--text-gray);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px;
+            border-radius: 12px;
+            color: #FFFFFF;
+            font-size: 15px;
+            outline: none;
+        }
+        .input-group input:focus { border-color: var(--apple-blue); }
+
+        .submit-btn {
+            width: 100%;
+            background: var(--apple-blue);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(0, 122, 255, 0.3);
+        }
+        .submit-btn:active { transform: scale(0.98); }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <div class="user-info">
+        <div class="user-profile">
             <h2 id="user-display-name">Yuklanmoqda...</h2>
-            <p>Life OS Ekotizimi</p>
+            <p>Life OS Premium</p>
         </div>
-        <div class="premium-badge" id="premium-status">LOADING</div>
+        <div class="status-badge" id="premium-status">LOADING</div>
     </div>
 
-    <div class="xp-container">
-        <div class="xp-text">
-            <span>Daraja: <b id="level-text">Level 1</b></span>
-            <span id="xp-text">0 XP</span>
+    <div class="xp-wrapper">
+        <div class="xp-info">
+            <span>Daraja: <b id="level-text" style="color: var(--apple-blue);">Level 1</b></span>
+            <span id="xp-text" style="color: var(--neon-green);">0 XP</span>
         </div>
-        <div class="xp-bar-bg">
-            <div class="xp-bar-fill" id="xp-bar-fill"></div>
+        <div class="xp-bar-container">
+            <div class="xp-bar-progress" id="xp-bar-fill"></div>
         </div>
     </div>
 
-    <div class="main-card">
-        <h3>Tizimdagi Umumiy Ballingiz</h3>
-        <div class="balance" id="total-xp-dashboard">0 XP</div>
+    <div class="glass-card finance-dashboard">
+        <h3>Joriy Balans</h3>
+        <div class="main-balance" id="total-balance">0 UZS</div>
+        <div class="finance-stats">
+            <div class="stat-box">
+                <p>Daromadlar</p>
+                <span class="stat-income" id="total-income">+0</span>
+            </div>
+            <div class="stat-box" style="border-left: 1px solid rgba(255,255,255,0.08);">
+                <p>Xarajatlar</p>
+                <span class="stat-expense" id="total-expense">-0</span>
+            </div>
+        </div>
     </div>
 
-    <div class="section-title">🎯 Bugungi Asosiy Odatlar</div>
-    
-    <div id="habits-list">
-        <div class="habit-item">
-            <div class="habit-info">
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('habits', this)">🎯 Odatlar</button>
+        <button class="tab-btn" onclick="switchTab('finance', this)">💰 Moliya kiritish</button>
+    </div>
+
+    <div id="section-habits" class="content-section active">
+        <div class="item-row">
+            <div class="item-info">
                 <h4>Kitob o'qish</h4>
-                <p>Har kuni kamida 15 sahifa</p>
+                <p>Kunlik 15 sahifa rivojlanish uchun</p>
             </div>
-            <button class="done-btn" onclick="completeHabit(this, 'Kitob o\'qish', 15)">Bajarildi</button>
+            <button class="action-btn" onclick="triggerHabit(this, 'Kitob o\'qish', 15)">+15 XP</button>
         </div>
-        <div class="habit-item">
-            <div class="habit-info">
-                <h4>Dasturlash (Coding)</h4>
-                <p>Yangi Life OS funksiyalarini yozish</p>
+        <div class="item-row">
+            <div class="item-info">
+                <h4>Dasturlash / Coding</h4>
+                <p>Yangi Life OS modullarini yozish</p>
             </div>
-            <button class="done-btn" onclick="completeHabit(this, 'Dasturlash', 25)">Bajarildi</button>
+            <button class="action-btn" onclick="triggerHabit(this, 'Dasturlash', 25)">+25 XP</button>
+        </div>
+        <div class="item-row">
+            <div class="item-info">
+                <h4>Sport va Ertalabki Badantarbiya</h4>
+                <p>Sog'lom tana va yuqori energiya</p>
+            </div>
+            <button class="action-btn" onclick="triggerHabit(this, 'Sport', 20)">+20 XP</button>
+        </div>
+    </div>
+
+    <div id="section-finance" class="content-section">
+        <div class="glass-card">
+            <div class="input-group">
+                <label>Amaliyot turi</label>
+                <select id="fin-type">
+                    <option value="Daromad">Daromad (Kirim)</option>
+                    <option value="Xarajat">Xarajat (Chiqim)</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Miqdori (UZS)</label>
+                <input type="number" id="fin-amount" placeholder="Masalan: 50000">
+            </div>
+            <div class="input-group">
+                <label>Kategoriya</label>
+                <select id="fin-category">
+                    <option value="Oziq-ovqat">Oziq-ovqat</option>
+                    <option value="Transport">Transport</option>
+                    <option value="Ta'lim">Ta'lim</option>
+                    <option value="Biznes">Biznes / SMM</option>
+                    <option value="Xobbi">Xobbi / Ko'ngilochar</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Izoh (Komentariya)</label>
+                <input type="text" id="fin-comment" placeholder="Kichik eslatma yozing...">
+            </div>
+            <button class="submit-btn" onclick="submitFinanceOperation()">Tranzaksiyani Saqlash</button>
         </div>
     </div>
 
@@ -168,91 +324,156 @@
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        // 🔗 SHAXSIY SHEETDB API HAVOLANGIZ
         const SHEETDB_API_URL = "https://sheetdb.io/api/v1/oor0mxsj20xig";
         
-        // Telegramdan foydalanuvchi ID sini xavfsiz olish
-        const telegramId = tg.initDataUnsafe?.user?.id ? String(tg.initDataUnsafe.user.id) : "573892799"; // Sinov uchun defolt ID
-        const firstName = tg.initDataUnsafe?.user?.first_name || "Dasturchi";
+        // Telegramdan foydalanuvchi ma'lumotlarini aniqlash
+        const telegramId = tg.initDataUnsafe?.user?.id ? String(tg.initDataUnsafe.user.id) : "573892799"; 
+        const firstName = tg.initDataUnsafe?.user?.first_name || "Yorqin";
         
         document.getElementById('user-display-name').innerText = firstName;
 
-        // 1. Google Sheet'dan Foydalanuvchi ma'lumotlarini yuklash (Real-time)
-        async function loadUserData() {
+        // Tablarni almashtirish funksiyasi
+        function switchTab(tabName, btn) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            
+            btn.classList.add('active');
+            document.getElementById('section-' + tabName).classList.add('active');
+            tg.HapticFeedback.impactOccurred('light');
+        }
+
+        // 1. Google Sheets-dan barcha ma'lumotlarni integratsiya qilish (Users + Finance)
+        async function loadLifeOSCore() {
             try {
-                const response = await fetch(`${SHEETDB_API_URL}/search?telegram_id=${telegramId}&sheet=Users`);
-                const data = await response.json();
+                // A) Users ma'lumotlarini yuklash
+                const userRes = await fetch(`${SHEETDB_API_URL}/search?telegram_id=${telegramId}&sheet=Users`);
+                const userData = await userRes.json();
                 
-                if (data && data.length > 0) {
-                    const user = data[0];
+                if (userData && userData.length > 0) {
+                    const user = userData[0];
                     const xp = parseInt(user.xp_points) || 0;
                     const isPremium = user.premium_status === "TRUE";
 
-                    // UI elementlarini yangilash
-                    document.getElementById('total-xp-dashboard').innerText = xp + " XP";
                     document.getElementById('xp-text').innerText = xp + " XP";
                     document.getElementById('premium-status').innerText = isPremium ? "👑 PREMIUM" : "⚡️ ODDIY";
-                    if(isPremium) document.getElementById('premium-status').style.background = "linear-gradient(135deg, #FFD700, #FFA500)";
-
-                    // Darajani hisoblash (Har 100 XP bitta daraja)
+                    
                     const level = Math.floor(xp / 100) + 1;
                     document.getElementById('level-text').innerText = "Level " + level;
-
-                    // Progress bar chizig'ini to'ldirish Miqdori (%)
-                    const progressPercent = xp % 100;
-                    document.getElementById('xp-bar-fill').style.width = progressPercent + "%";
+                    document.getElementById('xp-bar-fill').style.width = (xp % 100) + "%";
                 }
-            } catch (error) {
-                console.error("Ma'lumot yuklashda xatolik:", error);
+
+                // B) Finance (Moliya) ma'lumotlarini yuklash va hisoblash
+                const finRes = await fetch(`${SHEETDB_API_URL}/search?telegram_id=${telegramId}&sheet=Finance`);
+                const finData = await finRes.json();
+                
+                let incomeTotal = 0;
+                let expenseTotal = 0;
+
+                if (finData && finData.length > 0) {
+                    finData.forEach(row => {
+                        const amount = parseFloat(row.amount) || 0;
+                        if (row.type === "Daromad") {
+                            incomeTotal += amount;
+                        } else if (row.type === "Xarajat") {
+                            expenseTotal += amount;
+                        }
+                    });
+                }
+
+                const netBalance = incomeTotal - expenseTotal;
+                document.getElementById('total-balance').innerText = netBalance.toLocaleString('uz-UZ') + " UZS";
+                document.getElementById('total-income').innerText = "+" + incomeTotal.toLocaleString('uz-UZ');
+                document.getElementById('total-expense').innerText = "-" + expenseTotal.toLocaleString('uz-UZ');
+
+            } catch (err) {
+                console.error("Life OS ma'lumotlarini yuklashda uzilish:", err);
             }
         }
 
-        // 2. Odat bajarilganda Google Sheet'ni yangilash va XP qo'shish
-        async function completeHabit(button, habitName, xpReward) {
-            if (button.classList.contains('completed')) return; // Agar oldin bosilgan bo'lsa to'xtatamiz
+        // 2. Odat bajarilganda tranzaksiyani yozish va XP ball berish
+        async function triggerHabit(btn, habitName, xpReward) {
+            if (btn.classList.contains('completed')) return;
 
-            tg.HapticFeedback.impactOccurred('heavy'); // Premium tebranish effekti
-            button.classList.add('completed');
-            button.innerText = "✓ Tayyor";
+            tg.HapticFeedback.impactOccurred('heavy');
+            btn.classList.add('completed');
+            btn.innerText = "✓ Tayyor";
 
             try {
-                // A) Google Sheet'ning 'Habits' varag'iga ma'lumot qo'shish
-                const habitPayload = {
-                    "data": [{
-                        "telegram_id": telegramId,
-                        "habit_name": habitName,
-                        "streak": "1",
-                        "last_completed": new Date().toLocaleDateString('uz-UZ')
-                    }]
-                };
+                // Habits varag'iga yozish
                 await fetch(`${SHEETDB_API_URL}?sheet=Habits`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(habitPayload)
+                    body: JSON.stringify({
+                        "data": [{
+                            "telegram_id": telegramId,
+                            "habit_name": habitName,
+                            "streak": "1",
+                            "last_completed": new Date().toLocaleDateString('uz-UZ')
+                        }]
+                    })
                 });
 
-                // B) Google Sheet'ning 'Users' varag'ida foydalanuvchi XP ballarini yangilash
-                // Buning uchun birinchi joriy XP ni olamiz
-                const currentXpText = document.getElementById('total-xp-dashboard').innerText;
-                const currentXp = parseInt(currentXpText) || 0;
-                const newXp = currentXp + xpReward;
+                // Users varag'ida XP ballni oshirish
+                const currentXp = parseInt(document.getElementById('xp-text').innerText) || 0;
+                const updatedXp = currentXp + xpReward;
 
                 await fetch(`${SHEETDB_API_URL}/telegram_id/${telegramId}?sheet=Users`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ "data": { "xp_points": newXp } })
+                    body: JSON.stringify({ "data": { "xp_points": updatedXp } })
                 });
 
-                // Sahifadagi vizual ma'lumotlarni qayta yuklash
-                loadUserData();
-
-            } catch (error) {
-                console.error("Odatni saqlashda xatolik:", error);
+                loadLifeOSCore();
+            } catch (err) {
+                console.error("Odatni saqlashda xatolik:", err);
             }
         }
 
-        // Sahifa ochilishi bilan ma'lumotlarni yuklaymiz
-        loadUserData();
+        // 3. Moliyaviy operatsiyani shakllantirish va jadvalga jo'natish
+        async function submitFinanceOperation() {
+            const type = document.getElementById('fin-type').value;
+            const amount = document.getElementById('fin-amount').value;
+            const category = document.getElementById('fin-category').value;
+            const comment = document.getElementById('fin-comment').value || "Izohsiz";
+
+            if (!amount || amount <= 0) {
+                tg.showAlert("Iltimos, miqdorni to'g'ri kiriting!");
+                return;
+            }
+
+            tg.HapticFeedback.notificationOccurred('success');
+            
+            const payload = {
+                "data": [{
+                    "telegram_id": telegramId,
+                    "type": type,
+                    "amount": amount,
+                    "category": category,
+                    "comment": comment,
+                    "date": new Date().toLocaleDateString('uz-UZ')
+                }]
+            };
+
+            try {
+                const response = await fetch(`${SHEETDB_API_URL}?sheet=Finance`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    document.getElementById('fin-amount').value = "";
+                    document.getElementById('fin-comment').value = "";
+                    tg.showAlert("Tranzaksiya muvaffaqiyatli saqlandi! 📊");
+                    loadLifeOSCore();
+                }
+            } catch (err) {
+                console.error("Moliyani saqlashda uzilish:", err);
+            }
+        }
+
+        // Birinchi yuklanish
+        loadLifeOSCore();
     </script>
 </body>
 </html>
