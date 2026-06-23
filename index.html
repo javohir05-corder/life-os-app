@@ -3,38 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Life OS — iOS 26 Ultra Glass</title>
+    <title>Life OS — iOS Ultimate Neon Glass</title>
     <!-- Telegram WebApp JS -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --apple-blue: #007AFF;
-            --apple-green: #34C759;
-            --apple-pink: #FF2D55;
-            --apple-purple: #AF52DE;
-            --glass-bg: rgba(255, 255, 255, 0.04);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --glass-glow: rgba(255, 255, 255, 0.03);
+            --ios-blue: #007AFF;
+            --ios-green: #34C759;
+            --ios-pink: #FF2D55;
+            --ios-purple: #AF52DE;
+            --ios-orange: #FF9500;
+            --glass-core: rgba(30, 30, 40, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.15);
             --text-main: #FFFFFF;
-            --text-secondary: rgba(255, 255, 255, 0.55);
+            --text-muted: rgba(255, 255, 255, 0.6);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif;
             -webkit-user-select: none;
             user-select: none;
-            outline: none;
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* iOS 26 Gologramma va Jonli Mesh Fon Elementlari */
+        /* Jonli, O'ta Yorqin Mesh Gradient Fon */
         body {
-            background-color: #040406;
+            background-color: #030305;
             color: var(--text-main);
-            padding: 20px 16px 110px 16px;
+            padding: 24px 16px 120px 16px;
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
@@ -43,117 +42,138 @@
         body::before {
             content: '';
             position: fixed;
-            top: -20%;
-            left: -30%;
-            width: 180vw;
-            height: 180vh;
+            top: -10%;
+            left: -20%;
+            width: 150vw;
+            height: 150vh;
             background: 
-                radial-gradient(circle at 20% 30%, rgba(0, 122, 255, 0.22) 0%, transparent 45%),
-                radial-gradient(circle at 85% 20%, rgba(175, 82, 222, 0.2) 0%, transparent 40%),
-                radial-gradient(circle at 50% 80%, rgba(255, 45, 85, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 10% 85%, rgba(52, 199, 89, 0.12) 0%, transparent 35%);
+                radial-gradient(circle at 15% 20%, rgba(0, 122, 255, 0.4) 0%, transparent 50%),
+                radial-gradient(circle at 85% 15%, rgba(175, 82, 222, 0.35) 0%, transparent 45%),
+                radial-gradient(circle at 75% 75%, rgba(255, 45, 85, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 25% 80%, rgba(52, 199, 89, 0.25) 0%, transparent 40%);
             z-index: -2;
-            filter: blur(80px);
-            animation: meshFluid 25s ease infinite alternate;
+            filter: blur(70px);
+            animation: fluidMotion 18s ease infinite alternate;
         }
 
         body::after {
             content: '';
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.35);
-            backdrop-filter: brightness(0.85) contrast(1.1);
-            -webkit-backdrop-filter: brightness(0.85) contrast(1.1);
+            background: linear-gradient(180deg, rgba(3, 3, 5, 0.2) 0%, rgba(3, 3, 5, 0.7) 100%);
+            backdrop-filter: blur(40px) saturate(230%);
+            -webkit-backdrop-filter: blur(40px) saturate(230%);
             z-index: -1;
         }
 
-        @keyframes meshFluid {
-            0% { transform: scale(1) rotate(0deg) translate(0px, 0px); }
-            50% { transform: scale(1.15) rotate(90deg) translate(40px, -60px); }
-            100% { transform: scale(0.9) rotate(180deg) translate(-30px, 40px); }
+        @keyframes fluidMotion {
+            0% { transform: scale(1) translate(0px, 0px) rotate(0deg); }
+            50% { transform: scale(1.1) translate(30px, -40px) rotate(45deg); }
+            100% { transform: scale(0.95) translate(-20px, 20px) rotate(90deg); }
         }
 
-        /* Ultra-Glassmorphism Shisha Kartalari */
+        /* Premium iOS Card Style (3D Liquid Glass) */
         .glass-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(40px) saturate(210%);
-            -webkit-backdrop-filter: blur(40px) saturate(210%);
+            background: var(--glass-core);
             border: 1px solid var(--glass-border);
             border-radius: 24px;
             padding: 20px;
             margin-bottom: 16px;
-            position: relative;
-            overflow: hidden;
             box-shadow: 
-                0 4px 30px rgba(0, 0, 0, 0.4),
-                inset 0 1px 1px rgba(255, 255, 255, 0.1);
+                0 15px 35px rgba(0, 0, 0, 0.5),
+                inset 0 1px 2px rgba(255, 255, 255, 0.2);
+            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), background 0.2s;
+        }
+        .glass-card:active {
+            transform: scale(0.98);
+            background: rgba(40, 40, 55, 0.55);
         }
 
-        /* iOS Spring Silliq Animatsiyali Sahifalar */
+        /* iOS Fluid Navigation Smooth Tabs */
         .app-page {
             display: none;
             opacity: 0;
-            transform: scale(0.96) translateY(15px);
-            transition: none;
+            transform: scale(0.94) translateY(20px);
         }
         
         .app-page.active-page {
             display: block;
-            animation: iosSpring 0.55s cubic-bezier(0.25, 1, 0.3, 1) forwards;
+            animation: iosSpringNav 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards;
         }
 
-        @keyframes iosSpring {
+        @keyframes iosSpringNav {
             to {
                 opacity: 1;
                 transform: scale(1) translateY(0);
             }
         }
 
-        /* Dashboard Sarlavhalari */
+        /* Sarlavha Dizayni */
         .db-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 24px;
-            padding: 4px;
+            padding: 0 4px;
         }
-        .db-header h2 { font-size: 26px; font-weight: 800; letter-spacing: -0.8px; }
-        .db-header p { color: var(--text-secondary); font-size: 13px; font-weight: 500; margin-top: 1px;}
-        .date-badge { color: var(--apple-blue); font-weight: 700; font-size: 14px; background: rgba(0, 122, 255, 0.12); padding: 5px 12px; border-radius: 30px; border: 1px solid rgba(0, 122, 255, 0.15); }
+        .db-header h2 { font-size: 28px; font-weight: 800; letter-spacing: -1px; text-shadow: 0 0 20px rgba(255,255,255,0.1); }
+        .db-header p { color: var(--text-muted); font-size: 14px; font-weight: 500; margin-top: 2px; }
+        .date-badge { color: #FFFFFF; font-weight: 700; font-size: 13px; background: var(--ios-blue); padding: 6px 14px; border-radius: 30px; box-shadow: 0 0 15px rgba(0, 122, 255, 0.4); text-transform: uppercase; }
 
-        /* 3D Dashboard Grid */
+        /* 3D Dashboard Stats Grid */
         .quick-stats-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
+            gap: 14px;
         }
         .stat-card-mini {
             padding: 16px;
             border-radius: 20px;
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            transition: transform 0.2s ease;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 95px;
+            box-shadow: inset 0 1px 1px rgba(255,255,255,0.05);
         }
-        .stat-card-mini:active { transform: scale(0.96); }
-        .stat-card-mini p { font-size: 11px; color: var(--text-secondary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-        .stat-card-mini h4 { font-size: 17px; font-weight: 700; margin-top: 6px; letter-spacing: -0.3px; }
+        .stat-card-mini p { font-size: 11px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-card-mini h4 { font-size: 18px; font-weight: 800; margin-top: 8px; letter-spacing: -0.3px; }
 
-        /* iOS Pastki Navigatsiya (Floating Glass Tab Bar) */
+        /* iOS Premium Floating Stickerlar Ko'rinishi */
+        .ios-sticker {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            font-size: 20px;
+            margin-right: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .bg-blue { background: linear-gradient(135deg, #5AC8FA, var(--ios-blue)); }
+        .bg-green { background: linear-gradient(135deg, #4CD964, var(--ios-green)); }
+        .bg-pink { background: linear-gradient(135deg, #FF2D55, #FF3B30); }
+        .bg-purple { background: linear-gradient(135deg, #DA85FF, var(--ios-purple)); }
+        .bg-orange { background: linear-gradient(135deg, #FFCC00, var(--ios-orange)); }
+
+        /* iOS Floating Tab Bar */
         .bottom-nav {
             position: fixed;
-            bottom: 20px;
+            bottom: 24px;
             left: 16px;
             right: 16px;
-            background: rgba(14, 14, 17, 0.45);
-            backdrop-filter: blur(50px) saturate(200%);
-            -webkit-backdrop-filter: blur(50px) saturate(200%);
-            border: 1px solid rgba(255, 255, 255, 0.07);
-            border-radius: 32px;
+            background: rgba(20, 20, 25, 0.4);
+            backdrop-filter: blur(45px) saturate(210%);
+            -webkit-backdrop-filter: blur(45px) saturate(210%);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 35px;
             display: flex;
             justify-content: space-around;
-            padding: 12px 6px;
-            z-index: 9999;
-            box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+            padding: 12px 8px;
+            z-index: 99999;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.7);
         }
         .nav-item {
             display: flex;
@@ -161,102 +181,104 @@
             align-items: center;
             background: none;
             border: none;
-            color: var(--text-secondary);
+            color: var(--text-muted);
             font-size: 10px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
             width: 18%;
-            transition: all 0.3s cubic-bezier(0.25, 1, 0.3, 1);
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.25, 1);
         }
         .nav-item.active-nav {
-            color: var(--text-main);
-            transform: translateY(-2px) scale(1.08);
+            color: #FFFFFF;
+            transform: translateY(-4px) scale(1.12);
         }
-        .nav-icon {
+        .nav-item .nav-sticker {
             font-size: 22px;
-            margin-bottom: 3px;
-            filter: grayscale(1) opacity(0.6);
+            margin-bottom: 4px;
+            filter: opacity(0.5) saturate(0.5);
             transition: all 0.3s;
         }
-        .nav-item.active-nav .nav-icon {
-            filter: grayscale(0) opacity(1);
-            text-shadow: 0 0 15px rgba(255,255,255,0.4);
+        .nav-item.active-nav .nav-sticker {
+            filter: opacity(1) saturate(1.5);
+            text-shadow: 0 0 15px rgba(255,255,255,0.6);
         }
 
-        /* Chiroyli Shaffof Ro'yxat Qatorlari */
-        .section-title { font-size: 15px; font-weight: 700; color: var(--text-secondary); margin: 8px 4px 12px 4px; text-transform: uppercase; letter-spacing: 0.8px; }
+        /* List elementlari */
+        .section-title { font-size: 14px; font-weight: 800; color: var(--text-muted); margin: 12px 4px 12px 4px; text-transform: uppercase; letter-spacing: 1px; }
         
         .data-row {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
             padding: 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 12px;
-            transition: all 0.2s;
+            transition: transform 0.2s ease;
         }
-        .data-row:active { background: rgba(255,255,255,0.05); }
-        .row-info h4 { font-size: 16px; font-weight: 600; letter-spacing: -0.2px; }
-        .row-info p { font-size: 12px; color: var(--text-secondary); margin-top: 3px; }
+        .data-row:active { transform: scale(0.98); background: rgba(255,255,255,0.06); }
+        .row-flex { display: flex; align-items: center; }
+        .row-info h4 { font-size: 16px; font-weight: 700; letter-spacing: -0.2px; }
+        .row-info p { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
 
-        /* iOS Tizimli Premium Action Tugmalar */
+        /* Premium iOS Tugmalari */
         .btn-action {
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            color: var(--text-main);
-            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #FFFFFF;
+            padding: 8px 18px;
             border-radius: 40px;
             font-size: 12px;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.25s ease;
-        }
-        .btn-action.done {
-            background: linear-gradient(135deg, var(--apple-green), #22C55E);
-            border: none;
-            color: #000000;
-            box-shadow: 0 0 15px rgba(52, 199, 89, 0.35);
-        }
-
-        /* Premium Form elementlari (Apple inputs) */
-        .form-group { margin-bottom: 16px; }
-        .form-group label { display: block; font-size: 11px; color: var(--text-secondary); font-weight: 700; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px; }
-        .form-group input, .form-group select {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            padding: 14px;
-            border-radius: 14px;
-            color: #FFFFFF;
-            font-size: 15px;
-            font-weight: 500;
             transition: all 0.25s;
         }
-        .form-group input:focus, .form-group select:focus {
-            border-color: rgba(255, 255, 255, 0.2);
-            background: rgba(255, 255, 255, 0.06);
+        .btn-action.done {
+            background: linear-gradient(135deg, var(--ios-green), #2ed573);
+            border: none;
+            color: #000000;
+            box-shadow: 0 0 20px rgba(52, 199, 89, 0.45);
+        }
+
+        /* Inputs */
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-size: 11px; color: var(--text-muted); font-weight: 800; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px; }
+        .form-group input, .form-group select {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 16px;
+            border-radius: 16px;
+            color: #FFFFFF;
+            font-size: 15px;
+            font-weight: 600;
+            transition: all 0.25s;
+        }
+        .form-group input:focus {
+            border-color: var(--ios-blue);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 15px rgba(0, 122, 255, 0.2);
         }
 
         .btn-submit {
             width: 100%;
-            background: #FFFFFF;
+            background: linear-gradient(135deg, #FFFFFF, #E5E5EA);
             color: #000000;
             border: none;
-            padding: 15px;
-            border-radius: 16px;
+            padding: 16px;
+            border-radius: 18px;
             font-size: 15px;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 20px rgba(255,255,255,0.15);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 25px rgba(255,255,255,0.2);
         }
-        .btn-submit:active { transform: scale(0.97); opacity: 0.9; }
+        .btn-submit:active { transform: scale(0.96); opacity: 0.9; }
 
-        /* iOS Progress Bar */
-        .progress-bar-bg { background: rgba(255, 255, 255, 0.06); height: 8px; border-radius: 4px; overflow: hidden; margin-top: 10px; border: 1px solid rgba(255,255,255,0.02); }
-        .progress-bar-fill { background: linear-gradient(90deg, var(--apple-blue), var(--apple-purple)); height: 100%; width: 0%; transition: width 0.7s cubic-bezier(0.25, 1, 0.3, 1); }
+        /* iOS Progress Elements */
+        .progress-bar-bg { background: rgba(255, 255, 255, 0.08); height: 8px; border-radius: 6px; overflow: hidden; margin-top: 12px; position: relative; }
+        .progress-bar-fill { background: linear-gradient(90deg, var(--ios-blue), var(--ios-purple)); height: 100%; width: 0%; transition: width 0.8s cubic-bezier(0.25, 1, 0.25, 1); }
     </style>
 </head>
 <body>
@@ -268,7 +290,7 @@
         <div class="db-header">
             <div>
                 <h2 id="db-user-name">Salom!</h2>
-                <p>Life OS v1 Ekotizim</p>
+                <p>Life OS Premium</p>
             </div>
             <div class="date-badge" id="db-date">23-iyun</div>
         </div>
@@ -277,27 +299,27 @@
             <div class="quick-stats-grid">
                 <div class="stat-card-mini">
                     <p>🔥 Streak</p>
-                    <h4 id="db-streak">15 kun</h4>
+                    <h4 id="db-streak" style="color: var(--ios-orange);">15 kun</h4>
                 </div>
                 <div class="stat-card-mini">
                     <p>💰 Bu oy xarajat</p>
-                    <h4 id="db-expense" style="color: var(--apple-pink);">0 UZS</h4>
+                    <h4 id="db-expense" style="color: var(--ios-pink);">0 UZS</h4>
                 </div>
                 <div class="stat-card-mini">
                     <p>🎯 Maqsadlar</p>
-                    <h4 id="db-goals">0/0</h4>
+                    <h4 id="db-goals" style="color: var(--ios-purple);">0 ta</h4>
                 </div>
                 <div class="stat-card-mini">
                     <p>✅ Vazifalar</p>
-                    <h4 id="db-tasks">0 ta</h4>
+                    <h4 id="db-tasks" style="color: var(--ios-blue);">0 ta</h4>
                 </div>
             </div>
         </div>
 
-        <div class="section-title">🚀 Tezkor Bo'limlar</div>
+        <div class="section-title">⚡️ Tezkor Panellar</div>
         <div style="display: flex; gap: 12px; margin-bottom: 20px;">
-            <button class="btn-submit" style="margin:0; flex:1; background: rgba(255,255,255,0.06); color: white; border: 1px solid rgba(255,255,255,0.08);" onclick="switchTabDirect('finance', 3)">📊 Hisobot</button>
-            <button class="btn-submit" style="margin:0; flex:1;" onclick="switchTabDirect('tasks', 2)">➕ Tezkor Qo'shish</button>
+            <button class="btn-submit" style="margin:0; flex:1; background: rgba(255,255,255,0.07); color: white; border: 1px solid rgba(255,255,255,0.1);" onclick="switchTabDirect('finance', 3)">📊 Hisobot</button>
+            <button class="btn-submit" style="margin:0; flex:1; background: linear-gradient(135deg, var(--ios-blue), #0051FF); color:white; box-shadow: 0 4px 15px rgba(0,122,255,0.3);" onclick="switchTabDirect('tasks', 2)">➕ Tezkor Qo'shish</button>
         </div>
     </div>
 
@@ -309,36 +331,48 @@
         <div class="db-header">
             <div>
                 <h2>Odatlar Tracker</h2>
-                <p>Kunlik streaklarni yangilash</p>
+                <p>Kunlik intizom ko'rsatkichlari</p>
             </div>
         </div>
 
         <div class="glass-card">
             <div class="data-row">
-                <div class="row-info">
-                    <h4>Kitob o'qish</h4>
-                    <p>Har kuni kamida 15 sahifa</p>
+                <div class="row-flex">
+                    <div class="ios-sticker bg-blue">📖</div>
+                    <div class="row-info">
+                        <h4>Kitob o'qish</h4>
+                        <p>Kamida 15 sahifa</p>
+                    </div>
                 </div>
                 <button class="btn-action" onclick="completeHabitAction(this, 'Kitob o\'qish')">+15 XP</button>
             </div>
             <div class="data-row">
-                <div class="row-info">
-                    <h4>Dasturlash (Coding)</h4>
-                    <p>Yangi Life OS funksiyalarini yozish</p>
+                <div class="row-flex">
+                    <div class="ios-sticker bg-green">💻</div>
+                    <div class="row-info">
+                        <h4>Dasturlash (Coding)</h4>
+                        <p>Life OS yangi modullari</p>
+                    </div>
                 </div>
                 <button class="btn-action" onclick="completeHabitAction(this, 'Dasturlash')">+25 XP</button>
             </div>
             <div class="data-row">
-                <div class="row-info">
-                    <h4>Ingliz tili</h4>
-                    <p>SAT / CEFR kunlik testlari</p>
+                <div class="row-flex">
+                    <div class="ios-sticker bg-purple">🇬🇧</div>
+                    <div class="row-info">
+                        <h4>Ingliz tili</h4>
+                        <p>SAT / CEFR kunlik tayyorgarlik</p>
+                    </div>
                 </div>
                 <button class="btn-action" onclick="completeHabitAction(this, 'Ingliz tili')">+20 XP</button>
             </div>
             <div class="data-row">
-                <div class="row-info">
-                    <h4>Suv ichish</h4>
-                    <p>Sog'liqni tiklash va toza tana</p>
+                <div class="row-flex">
+                    <div class="ios-sticker bg-orange">💧</div>
+                    <div class="row-info">
+                        <h4>Suv ichish</h4>
+                        <p>Sog'lom tana balansi</p>
+                    </div>
                 </div>
                 <button class="btn-action" onclick="completeHabitAction(this, 'Suv ichish')">+10 XP</button>
             </div>
@@ -353,19 +387,19 @@
         <div class="db-header">
             <div>
                 <h2>Vazifalar</h2>
-                <p>To-Do ro'yxatni shakllantirish</p>
+                <p>Bugungi rejalashtirilgan ishlar</p>
             </div>
         </div>
 
         <div class="glass-card">
             <div class="form-group">
-                <label>Vazifa mazmuni</label>
-                <input type="text" id="task-title" placeholder="Masalan: Universitet hujjatlarini tayyorlash">
+                <label>Yangi vazifa</label>
+                <input type="text" id="task-title" placeholder="Masalan: SAT matematika imtihon biletini yechish">
             </div>
-            <button class="btn-submit" onclick="submitNewTask()">Vazifa Qo'shish</button>
+            <button class="btn-submit" style="background: linear-gradient(135deg, var(--ios-blue), #0051FF); color:white;" onclick="submitNewTask()">Vazifani Saqlash</button>
         </div>
 
-        <div class="section-title">📋 Joriy Vazifalar</div>
+        <div class="section-title">📋 Joriy Ro'yxat</div>
         <div id="tasks-list-container"></div>
     </div>
 
@@ -376,33 +410,33 @@
     <div id="page-finance" class="app-page">
         <div class="db-header">
             <div>
-                <h2>Moliya Balansi</h2>
-                <p>Kirimsiz chiqim bo'lmas</p>
+                <h2>Moliya Analitikasi</h2>
+                <p>Xarajat va kirimlarni yozish</p>
             </div>
         </div>
 
-        <div class="glass-card" style="text-align: center; padding: 25px 10px;">
-            <p style="font-size: 11px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;">Joriy Balans</p>
-            <h1 id="fin-page-balance" style="font-size: 34px; font-weight: 800; margin-top: 4px; letter-spacing: -0.5px;">0 UZS</h1>
+        <div class="glass-card" style="text-align: center; padding: 25px 10px; background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));">
+            <p style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Joriy Balans</p>
+            <h1 id="fin-page-balance" style="font-size: 36px; font-weight: 800; margin-top: 6px; letter-spacing: -1px;">0 UZS</h1>
         </div>
 
         <div class="glass-card">
             <div class="form-group">
-                <label>Turi</label>
+                <label>Operatsiya turi</label>
                 <select id="fin-operation-type">
-                    <option value="Xarajat">Xarajat (Chiqim)</option>
-                    <option value="Daromad">Daromad (Kirim)</option>
+                    <option value="Xarajat">❌ Xarajat (Chiqim)</option>
+                    <option value="Daromad">✅ Daromad (Kirim)</option>
                 </select>
             </div>
             <div class="form-group">
                 <label>Miqdori (UZS)</label>
-                <input type="number" id="fin-operation-amount" placeholder="50000">
+                <input type="number" id="fin-operation-amount" placeholder="25000">
             </div>
             <div class="form-group">
                 <label>Kategoriya / Izoh</label>
-                <input type="text" id="fin-operation-comment" placeholder="Ovqat, Transport, Universitet...">
+                <input type="text" id="fin-operation-comment" placeholder="Ovqat, Transport, Kurs va h.k.">
             </div>
-            <button class="btn-submit" onclick="submitFinanceOperation()">Tranzaksiyani Saqlash</button>
+            <button class="btn-submit" style="background: linear-gradient(135deg, var(--ios-pink), #D61A46); color:white; box-shadow:0 5px 20px rgba(255,45,85,0.3);" onclick="submitFinanceOperation()">Tranzaksiyani Yakunlash</button>
         </div>
     </div>
 
@@ -413,47 +447,46 @@
     <div id="page-goals" class="app-page">
         <div class="db-header">
             <div>
-                <h2>Maqsadlar va Progress</h2>
-                <p>Strategik rejalarni boshqarish</p>
+                <h2>Strategik Maqsadlar</h2>
+                <p>Katta marralar progress paneli</p>
             </div>
         </div>
 
-        <!-- YANTA YAN-YANGI: MAQSAD QO'SHISH FORMASI -->
         <div class="glass-card">
             <div class="form-group">
-                <label>Yangi Maqsad Nomi</label>
-                <input type="text" id="goal-title" placeholder="Masalan: SAT Matematika 780 ball olish">
+                <label>Maqsad nomi</label>
+                <input type="text" id="goal-title" placeholder="Masalan: IELTS 7.5 darajaga chiqish">
             </div>
             <div class="form-group">
-                <label>Hozirgi Progress (%)</label>
-                <input type="number" id="goal-progress" placeholder="Masalan: 35" min="0" max="100">
+                <label>Boshlang'ich Progress (%)</label>
+                <input type="number" id="goal-progress" placeholder="Masalan: 45" min="0" max="100">
             </div>
-            <button class="btn-submit" onclick="submitNewGoal()">Maqsadni Ro'yxatga Qo'shish</button>
+            <button class="btn-submit" style="background: linear-gradient(135deg, var(--ios-purple), #8E2DE2); color:white; box-shadow:0 5px 20px rgba(175,82,222,0.3);" onclick="submitNewGoal()">Yangi Maqsad Qo'shish</button>
         </div>
 
-        <div class="section-title">🎯 Faol Maqsadlar</div>
+        <div class="section-title">🎯 Mening Maqsadlarim</div>
         <div id="goals-list-container"></div>
     </div>
 
 
     <!-- =========================================
-         iOS FLOATING TAB BAR
+         iOS FLOATING GLASS TAB BAR
          ========================================= -->
     <div class="bottom-nav">
         <button class="nav-item active-nav" onclick="switchTab('dashboard', this)">
-            <div class="nav-icon">🏠</div><div>Asosiy</div>
+            <div class="nav-sticker">🏠</div><div>Asosiy</div>
         </button>
         <button class="nav-item" onclick="switchTab('habits', this)">
-            <div class="nav-icon">💪</div><div>Odatlar</div>
+            <div class="nav-sticker">💪</div><div>Odatlar</div>
         </button>
         <button class="nav-item" onclick="switchTab('tasks', this)">
-            <div class="nav-icon">✅</div><div>Vazifalar</div>
+            <div class="nav-sticker">✅</div><div>Vazifalar</div>
         </button>
         <button class="nav-item" onclick="switchTab('finance', this)">
-            <div class="nav-icon">💰</div><div>Moliya</div>
+            <div class="nav-sticker">💰</div><div>Moliya</div>
         </button>
         <button class="nav-item" onclick="switchTab('goals', this)">
-            <div class="nav-icon">🎯</div><div>Maqsadlar</div>
+            <div class="nav-sticker">🎯</div><div>Maqsadlar</div>
         </button>
     </div>
 
@@ -467,15 +500,11 @@
 
         document.getElementById('db-user-name').innerText = "Salom, " + firstName + "!";
 
-        // Tab boshqaruvi va silliq Apple Spring Animatsiyasi triggering
         function switchTab(pageId, navButton) {
-            document.querySelectorAll('.app-page').forEach(page => {
-                page.classList.remove('active-page');
-            });
+            document.querySelectorAll('.app-page').forEach(page => page.classList.remove('active-page'));
             document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active-nav'));
 
-            const targetPage = document.getElementById('page-' + pageId);
-            targetPage.classList.add('active-page');
+            document.getElementById('page-' + pageId).classList.add('active-page');
             navButton.classList.add('active-nav');
             
             tg.HapticFeedback.impactOccurred('medium');
@@ -487,17 +516,16 @@
             switchTab(pageId, btns[navIndex]);
         }
 
-        // Barcha jadvallarni (Users, Finance, Tasks, Goals) Real-time sinxronizatsiya qilish
         async function syncCoreData() {
             try {
-                // A) Streak / Users yuklash
+                // A) Users & Streaks
                 const userRes = await fetch(`${SHEETDB_API_URL}/search?telegram_id=${telegramId}&sheet=Users`);
                 const userData = await userRes.json();
                 if(userData && userData.length > 0) {
                     document.getElementById('db-streak').innerText = (userData[0].xp_points ? Math.floor(parseInt(userData[0].xp_points)/10) + 15 : 15) + " kun";
                 }
 
-                // B) Finance (Moliya) yuklash va hisoblash
+                // B) Finance Tizimi
                 const finRes = await fetch(`${SHEETDB_API_URL}/search?telegram_id=${telegramId}&sheet=Finance`);
                 const finData = await finRes.json();
                 let income = 0, expense = 0;
@@ -511,7 +539,7 @@
                 document.getElementById('db-expense').innerText = expense.toLocaleString('uz-UZ') + " UZS";
                 document.getElementById('fin-page-balance').innerText = (income - expense).toLocaleString('uz-UZ') + " UZS";
 
-                // C) Tasks (Vazifalar) yuklash
+                // C) Tasks Tizimi
                 const taskRes = await fetch(`${SHEETDB_API_URL}/search?telegram_id=${telegramId}&sheet=Tasks`);
                 const taskData = await taskRes.json();
                 const taskContainer = document.getElementById('tasks-list-container');
@@ -523,9 +551,12 @@
                             activeTasks++;
                             taskContainer.innerHTML += `
                                 <div class="data-row">
-                                    <div class="row-info">
-                                        <h4>${t.task_title}</h4>
-                                        <p>Holati: Faol</p>
+                                    <div class="row-flex">
+                                        <div class="ios-sticker bg-blue">📌</div>
+                                        <div class="row-info">
+                                            <h4>${t.task_title}</h4>
+                                            <p>Holati: Faol</p>
+                                        </div>
                                     </div>
                                     <button class="btn-action" onclick="completeTaskAction(this, '${t.task_title}')">Bajarildi</button>
                                 </div>`;
@@ -534,7 +565,7 @@
                 }
                 document.getElementById('db-tasks').innerText = activeTasks + " ta";
 
-                // D) Goals (Maqsadlar) yuklash
+                // D) Goals Tizimi
                 const goalRes = await fetch(`${SHEETDB_API_URL}/search?telegram_id=${telegramId}&sheet=Goals`);
                 const goalData = await goalRes.json();
                 const goalContainer = document.getElementById('goals-list-container');
@@ -547,44 +578,35 @@
                         let pct = parseInt(g.progress_percent) || 0;
                         goalContainer.innerHTML += `
                             <div class="glass-card">
-                                <div style="display: flex; justify-content: space-between; font-size: 15px; font-weight: 600;">
-                                    <span>🎯 ${g.goal_title}</span>
-                                    <span style="color: var(--apple-blue); font-weight:700;">${pct}%</span>
+                                <div style="display: flex; justify-content: space-between; font-size: 15px; font-weight: 700;">
+                                    <div style="display:flex; align-items:center;"><span style="margin-right:8px;">🎯</span> ${g.goal_title}</div>
+                                    <span style="color: var(--ios-blue); font-weight:800;">${pct}%</span>
                                 </div>
                                 <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: ${pct}%;"></div></div>
                             </div>`;
                     });
                 } else {
-                    // Agar bazada yo'q bo'lsa, default chiroyli maqsadlar ko'rsatiladi
                     goalsCount = 2;
                     goalContainer.innerHTML = `
                         <div class="glass-card">
-                            <div style="display: flex; justify-content: space-between; font-size: 15px; font-weight: 600;">
-                                <span>🎯 IELTS 7.0 & SAT Prep</span>
-                                <span style="color: var(--apple-blue); font-weight:700;">60%</span>
+                            <div style="display: flex; justify-content: space-between; font-size: 15px; font-weight: 700;">
+                                <div>🚀 IELTS 7.0 & SAT Plan</div>
+                                <span style="color: var(--ios-blue); font-weight:800;">60%</span>
                             </div>
                             <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 60%;"></div></div>
-                        </div>
-                        <div class="glass-card">
-                            <div style="display: flex; justify-content: space-between; font-size: 15px; font-weight: 600;">
-                                <span>🎯 10 mln Jamg'arish</span>
-                                <span style="color: var(--apple-blue); font-weight:700;">35%</span>
-                            </div>
-                            <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 35%;"></div></div>
                         </div>`;
                 }
                 document.getElementById('db-goals').innerText = goalsCount + " ta";
 
             } catch (err) {
-                console.error("Sinxronizatsiya xatosi:", err);
+                console.error("Xatolik:", err);
             }
         }
 
-        // Odat yakunlash
         async function completeHabitAction(btn, habitName) {
             if(btn.classList.contains('done')) return;
             tg.HapticFeedback.notificationOccurred('success');
-            btn.classList.add('done'); btn.innerText = "✓ Tayyor";
+            btn.classList.add('done'); btn.innerText = "✓";
 
             await fetch(`${SHEETDB_API_URL}?sheet=Habits`, {
                 method: 'POST',
@@ -594,7 +616,6 @@
             syncCoreData();
         }
 
-        // Yangi Vazifa saqlash
         async function submitNewTask() {
             const title = document.getElementById('task-title').value;
             if(!title) return;
@@ -609,7 +630,6 @@
             syncCoreData();
         }
 
-        // Vazifani o'chirish
         async function completeTaskAction(btn, title) {
             tg.HapticFeedback.notificationOccurred('success');
             btn.parentElement.remove();
@@ -621,7 +641,6 @@
             syncCoreData();
         }
 
-        // Moliya tranzaksiyasini yozish
         async function submitFinanceOperation() {
             const type = document.getElementById('fin-operation-type').value;
             const amount = document.getElementById('fin-operation-amount').value;
@@ -641,15 +660,11 @@
             syncCoreData();
         }
 
-        // YANTA YAN-YANGI FUNKSIYA: BAZAGA MAQSAD QO'SHISH
         async function submitNewGoal() {
             const title = document.getElementById('goal-title').value;
             const progress = document.getElementById('goal-progress').value || "0";
 
-            if(!title) {
-                tg.showAlert("Iltimos, maqsad nomini kiriting!");
-                return;
-            }
+            if(!title) return;
             tg.HapticFeedback.impactOccurred('medium');
             document.getElementById('goal-title').value = "";
             document.getElementById('goal-progress').value = "";
@@ -659,11 +674,10 @@
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({"data": [{"telegram_id": telegramId, "goal_title": title, "progress_percent": progress}]})
             });
-            tg.showAlert("Yangi maqsad tizimga qo'shildi! 🎯");
+            tg.showAlert("Yangi maqsad saqlandi! 🎯");
             syncCoreData();
         }
 
-        // Birinchi sinxronizatsiya
         syncCoreData();
     </script>
 </body>
