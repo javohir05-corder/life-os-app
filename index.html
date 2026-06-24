@@ -3,25 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Life OS — v1 Ecosystem</title>
+    <title>Life OS — Premium Dashboard</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --bg-dark: #09090B;
-            --card-bg: rgba(24, 24, 27, 0.65);
-            --border-glow: rgba(255, 255, 255, 0.06);
-            --neon-green: #22C55E;
-            --neon-pink: #EC4899;
-            --apple-blue: #3B82F6;
-            --text-gray: #A1A1AA;
-            --premium-purple: #A855F7;
+            --bg-dark: #0A0A0A;
+            --card-bg: rgba(22, 22, 23, 0.6);
+            --border-glow: rgba(255, 255, 255, 0.08);
+            --neon-green: #39FF14;
+            --neon-pink: #FF007F;
+            --apple-blue: #007AFF;
+            --text-gray: #8E8E93;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             -webkit-user-select: none;
             user-select: none;
         }
@@ -29,339 +28,296 @@
         body {
             background-color: var(--bg-dark);
             color: #FFFFFF;
-            padding: 16px 16px 90px 16px; /* Pastki menyu uchun bo'shliq */
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* Glassmorphism Cards */
+        /* Glassmorphism Card Style */
         .glass-card {
             background: var(--card-bg);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
             border: 1px solid var(--border-glow);
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 16px;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
 
-        /* Multi-page System */
-        .app-page {
-            display: none;
-        }
-        .app-page.active-page {
-            display: block;
-            animation: fadeIn 0.3s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(4px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* --- DASHBOARD STYLES --- */
-        .db-header {
+        /* Header Section */
+        .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
         }
-        .db-header h2 { font-size: 24px; font-weight: 700; letter-spacing: -0.5px; }
-        .db-header p { color: var(--text-gray); font-size: 13px; }
-        .date-badge { color: var(--apple-blue); font-weight: 600; font-size: 14px; }
 
-        .quick-stats-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-bottom: 16px;
+        .user-profile h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
+        .user-profile p { color: var(--text-gray); font-size: 13px; margin-top: 2px; }
+
+        .status-badge {
+            background: linear-gradient(135deg, var(--neon-pink), #7B2CBF);
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            box-shadow: 0 0 15px rgba(255, 0, 127, 0.3);
         }
-        .stat-card-mini {
-            padding: 12px;
+
+        /* 3D Progress Bar */
+        .xp-wrapper {
+            margin-bottom: 25px;
+        }
+        .xp-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .xp-bar-container {
+            background: rgba(255, 255, 255, 0.05);
+            height: 10px;
+            border-radius: 30px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .xp-bar-progress {
+            background: linear-gradient(90deg, #00FF87, var(--neon-green));
+            width: 0%;
+            height: 100%;
+            box-shadow: 0 0 10px var(--neon-green);
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Financial Grid (3D Dashboard Look) */
+        .finance-dashboard {
+            text-align: center;
+            padding: 25px 15px;
+        }
+        .finance-dashboard h3 {
+            font-size: 12px;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 8px;
+        }
+        .main-balance {
+            font-size: 38px;
+            font-weight: 800;
+            color: #FFFFFF;
+            letter-spacing: -1px;
+        }
+        .finance-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 15px;
+        }
+        .stat-box { width: 48%; }
+        .stat-box p { font-size: 11px; color: var(--text-gray); text-transform: uppercase; }
+        .stat-box span { font-size: 18px; font-weight: 700; display: block; margin-top: 4px; }
+        .stat-income { color: var(--neon-green); }
+        .stat-expense { color: var(--neon-pink); }
+
+        /* Navigation Tabs */
+        .tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.04);
+            padding: 4px;
             border-radius: 12px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-glow);
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
-        .stat-card-mini p { font-size: 11px; color: var(--text-gray); text-transform: uppercase; }
-        .stat-card-mini h4 { font-size: 15px; font-weight: 600; margin-top: 4px; }
-
-        /* --- BOTTOM NAVIGATION BAR --- */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(18, 18, 18, 0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-top: 1px solid var(--border-glow);
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0 calc(10px + env(safe-area-inset-bottom));
-            z-index: 999;
-        }
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        .tab-btn {
+            flex: 1;
             background: none;
             border: none;
             color: var(--text-gray);
-            font-size: 10px;
-            font-weight: 500;
+            padding: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 9px;
             cursor: pointer;
-            width: 20%;
-            transition: color 0.2s;
+            transition: all 0.2s ease;
         }
-        .nav-item.active-nav {
-            color: var(--apple-blue);
-        }
-        .nav-icon {
-            font-size: 20px;
-            margin-bottom: 4px;
+        .tab-btn.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: #FFFFFF;
         }
 
-        /* --- LIST ROWS & ELEMENTS --- */
-        .section-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--text-gray);
-            margin-bottom: 12px;
-            letter-spacing: -0.2px;
-        }
-        .data-row {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid var(--border-glow);
-            border-radius: 12px;
-            padding: 14px;
+        /* Content Sections */
+        .content-section { display: none; }
+        .content-section.active { display: block; }
+
+        /* Habits Elements */
+        .item-row {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
-        .row-info h4 { font-size: 15px; font-weight: 500; }
-        .row-info p { font-size: 12px; color: var(--text-gray); margin-top: 2px; }
+        .item-info h4 { font-size: 15px; font-weight: 600; }
+        .item-info p { font-size: 12px; color: var(--text-gray); margin-top: 2px; }
 
-        /* Action Buttons */
-        .btn-action {
-            background: rgba(59, 130, 246, 0.1);
-            border: 1px solid var(--apple-blue);
-            color: var(--apple-blue);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
+        .action-btn {
+            background: rgba(57, 255, 20, 0.08);
+            border: 1px solid var(--neon-green);
+            color: var(--neon-green);
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 700;
             cursor: pointer;
+            transition: all 0.2s;
         }
-        .btn-action.done {
+        .action-btn.completed {
             background: var(--neon-green);
-            border-color: var(--neon-green);
             color: #000000;
+            box-shadow: 0 0 12px var(--neon-green);
         }
 
-        /* --- FORMS & INPUTS --- */
-        .form-group { margin-bottom: 14px; }
-        .form-group label { display: block; font-size: 11px; color: var(--text-gray); uppercase; margin-bottom: 6px; }
-        .form-group input, .form-group select {
+        /* Finance Form Controls */
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: var(--text-gray);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+        .input-group input, .input-group select {
             width: 100%;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--border-glow);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             padding: 12px;
-            border-radius: 10px;
+            border-radius: 12px;
             color: #FFFFFF;
-            font-size: 14px;
+            font-size: 15px;
             outline: none;
         }
-        .form-group input:focus { border-color: var(--apple-blue); }
-        .btn-submit {
+        .input-group input:focus { border-color: var(--apple-blue); }
+
+        .submit-btn {
             width: 100%;
             background: var(--apple-blue);
             color: white;
             border: none;
             padding: 14px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 600;
-            margin-top: 8px;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(0, 122, 255, 0.3);
         }
-
-        /* Progress Ring / Bar */
-        .progress-bar-bg { background: rgba(255,255,255,0.05); height: 6px; border-radius: 3px; overflow:hidden; margin-top: 6px;}
-        .progress-bar-fill { background: var(--apple-blue); height: 100%; width: 0%; transition: width 0.5s; }
+        .submit-btn:active { transform: scale(0.98); }
     </style>
 </head>
 <body>
 
-    <div id="page-dashboard" class="app-page active-page">
-        <div class="db-header">
-            <div>
-                <h2 id="db-user-name">Yuklanmoqda...</h2>
-                <p>Ekotizim boshqaruv paneli</p>
-            </div>
-            <div class="date-badge" id="db-date">23-iyun</div>
+    <div class="header">
+        <div class="user-profile">
+            <h2 id="user-display-name">Yuklanmoqda...</h2>
+            <p>Life OS Premium</p>
         </div>
+        <div class="status-badge" id="premium-status">LOADING</div>
+    </div>
 
-        <div class="glass-card">
-            <div class="quick-stats-grid">
-                <div class="stat-card-mini">
-                    <p>🔥 Streak</p>
-                    <h4 id="db-streak">15 kun</h4>
-                </div>
-                <div class="stat-card-mini">
-                    <p>💰 Oylik Xarajat</p>
-                    <h4 id="db-expense" style="color: var(--neon-pink);">0 UZS</h4>
-                </div>
-                <div class="stat-card-mini">
-                    <p>🎯 Maqsadlar</p>
-                    <h4 id="db-goals">0/0</h4>
-                </div>
-                <div class="stat-card-mini">
-                    <p>✅ Vazifalar</p>
-                    <h4 id="db-tasks">0 ta</h4>
-                </div>
-            </div>
+    <div class="xp-wrapper">
+        <div class="xp-info">
+            <span>Daraja: <b id="level-text" style="color: var(--apple-blue);">Level 1</b></span>
+            <span id="xp-text" style="color: var(--neon-green);">0 XP</span>
         </div>
-
-        <div class="section-title">⚡️ Tezkor Amallar</div>
-        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-            <button class="btn-submit" style="margin:0; flex:1; background: rgba(255,255,255,0.05); border: 1px solid var(--border-glow);" onclick="navigateToPage('finance')">💰 Moliya</button>
-            <button class="btn-submit" style="margin:0; flex:1;" onclick="navigateToPage('tasks')">➕ Yangi Vazifa</button>
+        <div class="xp-bar-container">
+            <div class="xp-bar-progress" id="xp-bar-fill"></div>
         </div>
     </div>
 
-
-    <div id="page-habits" class="app-page">
-        <div class="db-header">
-            <div>
-                <h2>Odatlar Tracker</h2>
-                <p>Kunlik intizomni tekshirish</p>
+    <div class="glass-card finance-dashboard">
+        <h3>Joriy Balans</h3>
+        <div class="main-balance" id="total-balance">0 UZS</div>
+        <div class="finance-stats">
+            <div class="stat-box">
+                <p>Daromadlar</p>
+                <span class="stat-income" id="total-income">+0</span>
             </div>
-        </div>
-
-        <div class="glass-card" id="habits-list-container">
-            <div class="data-row">
-                <div class="row-info">
-                    <h4>Kitob o'qish</h4>
-                    <p>Kamida 15 sahifa</p>
-                </div>
-                <button class="btn-action" onclick="completeHabitAction(this, 'Kitob o\'qish', 15)">+15 XP</button>
-            </div>
-            <div class="data-row">
-                <div class="row-info">
-                    <h4>Dasturlash (Coding)</h4>
-                    <p>Life OS v1 loyihasi</p>
-                </div>
-                <button class="btn-action" onclick="completeHabitAction(this, 'Dasturlash', 25)">+25 XP</button>
-            </div>
-            <div class="data-row">
-                <div class="row-info">
-                    <h4>Ingliz Tili (SAT/IELTS)</h4>
-                    <p>Kunlik topshiriqlar</p>
-                </div>
-                <button class="btn-action" onclick="completeHabitAction(this, 'Ingliz tili', 20)">+20 XP</button>
+            <div class="stat-box" style="border-left: 1px solid rgba(255,255,255,0.08);">
+                <p>Xarajatlar</p>
+                <span class="stat-expense" id="total-expense">-0</span>
             </div>
         </div>
     </div>
 
-
-    <div id="page-tasks" class="app-page">
-        <div class="db-header">
-            <div>
-                <h2>Vazifalar ro'yxati</h2>
-                <p>Bugungi bajariladigan ishlar</p>
-            </div>
-        </div>
-
-        <div class="glass-card">
-            <div class="form-group">
-                <label>Yangi vazifa matni</label>
-                <input type="text" id="task-title" placeholder="Masalan: SAT Matematika testini tugatish">
-            </div>
-            <button class="btn-submit" onclick="submitNewTask()">Vazifa Qo'shish</button>
-        </div>
-
-        <div class="section-title">📋 Joriy Vazifalar</div>
-        <div id="tasks-list-container">
-            </div>
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('habits', this)">🎯 Odatlar</button>
+        <button class="tab-btn" onclick="switchTab('finance', this)">💰 Moliya kiritish</button>
     </div>
 
-
-    <div id="page-finance" class="app-page">
-        <div class="db-header">
-            <div>
-                <h2>Moliya Nazorati</h2>
-                <p>Xarajat va Daromad tizimi</p>
+    <div id="section-habits" class="content-section active">
+        <div class="item-row">
+            <div class="item-info">
+                <h4>Kitob o'qish</h4>
+                <p>Kunlik 15 sahifa rivojlanish uchun</p>
             </div>
+            <button class="action-btn" onclick="triggerHabit(this, 'Kitob o\'qish', 15)">+15 XP</button>
         </div>
-
-        <div class="glass-card" style="text-align: center; padding: 20px;">
-            <p style="font-size: 12px; color: var(--text-gray); text-transform: uppercase;">Joriy Balans</p>
-            <h1 id="fin-page-balance" style="font-size: 32px; font-weight: 800; margin-top: 4px;">0 UZS</h1>
+        <div class="item-row">
+            <div class="item-info">
+                <h4>Dasturlash / Coding</h4>
+                <p>Yangi Life OS modullarini yozish</p>
+            </div>
+            <button class="action-btn" onclick="triggerHabit(this, 'Dasturlash', 25)">+25 XP</button>
         </div>
+        <div class="item-row">
+            <div class="item-info">
+                <h4>Sport va Ertalabki Badantarbiya</h4>
+                <p>Sog'lom tana va yuqori energiya</p>
+            </div>
+            <button class="action-btn" onclick="triggerHabit(this, 'Sport', 20)">+20 XP</button>
+        </div>
+    </div>
 
+    <div id="section-finance" class="content-section">
         <div class="glass-card">
-            <div class="form-group">
+            <div class="input-group">
                 <label>Amaliyot turi</label>
-                <select id="fin-operation-type">
-                    <option value="Xarajat">Xarajat (Chiqim)</option>
+                <select id="fin-type">
                     <option value="Daromad">Daromad (Kirim)</option>
+                    <option value="Xarajat">Xarajat (Chiqim)</option>
                 </select>
             </div>
-            <div class="form-group">
+            <div class="input-group">
                 <label>Miqdori (UZS)</label>
-                <input type="number" id="fin-operation-amount" placeholder="25000">
+                <input type="number" id="fin-amount" placeholder="Masalan: 50000">
             </div>
-            <div class="form-group">
-                <label>Kategoriya / Izoh</label>
-                <input type="text" id="fin-operation-comment" placeholder="Ovqat, Transport, SAT va h.k.">
+            <div class="input-group">
+                <label>Kategoriya</label>
+                <select id="fin-category">
+                    <option value="Oziq-ovqat">Oziq-ovqat</option>
+                    <option value="Transport">Transport</option>
+                    <option value="Ta'lim">Ta'lim</option>
+                    <option value="Biznes">Biznes / SMM</option>
+                    <option value="Xobbi">Xobbi / Ko'ngilochar</option>
+                </select>
             </div>
-            <button class="btn-submit" onclick="submitFinanceOperation()">Saqlash</button>
+            <div class="input-group">
+                <label>Izoh (Komentariya)</label>
+                <input type="text" id="fin-comment" placeholder="Kichik eslatma yozing...">
+            </div>
+            <button class="submit-btn" onclick="submitFinanceOperation()">Tranzaksiyani Saqlash</button>
         </div>
-    </div>
-
-
-    <div id="page-goals" class="app-page">
-        <div class="db-header">
-            <div>
-                <h2>Strategik Maqsadlar</h2>
-                <p>Uzoq va qisqa muddatli planlar</p>
-            </div>
-        </div>
-
-        <div id="goals-list-container">
-            <div class="glass-card">
-                <div style="display: flex; justify-content: space-between; font-size: 15px; font-weight: 600;">
-                    <span>🎯 IELTS 7.0 & SAT</span>
-                    <span style="color: var(--apple-blue);">60%</span>
-                </div>
-                <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 60%;"></div></div>
-            </div>
-            <div class="glass-card">
-                <div style="display: flex; justify-content: space-between; font-size: 15px; font-weight: 600;">
-                    <span>🎯 10 mln Jamg'arish</span>
-                    <span style="color: var(--apple-blue);">35%</span>
-                </div>
-                <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 35%;"></div></div>
-            </div>
-        </div>
-    </div>
-
-
-    <div class="bottom-nav">
-        <button class="nav-item active-nav" onclick="switchTab('dashboard', this)">
-            <div class="nav-icon">🏠</div><div>Asosiy</div>
-        </button>
-        <button class="nav-item" onclick="switchTab('habits', this)">
-            <div class="nav-icon">💪</div><div>Odatlar</div>
-        </button>
-        <button class="nav-item" onclick="switchTab('tasks', this)">
-            <div class="nav-icon">✅</div><div>Vazifalar</div>
-        </button>
-        <button class="nav-item" onclick="switchTab('finance', this)">
-            <div class="nav-icon">💰</div><div>Moliya</div>
-        </button>
-        <button class="nav-item" onclick="switchTab('goals', this)">
-            <div class="nav-icon">🎯</div><div>Maqsadlar</div>
-        </button>
     </div>
 
     <script>
@@ -369,149 +325,155 @@
         tg.expand();
 
         const SHEETDB_API_URL = "https://sheetdb.io/api/v1/oor0mxsj20xig";
-        const telegramId = tg.initDataUnsafe?.user?.id ? String(tg.initDataUnsafe.user.id) : "573892799";
+        
+        // Telegramdan foydalanuvchi ma'lumotlarini aniqlash
+        const telegramId = tg.initDataUnsafe?.user?.id ? String(tg.initDataUnsafe.user.id) : "573892799"; 
         const firstName = tg.initDataUnsafe?.user?.first_name || "Yorqin";
+        
+        document.getElementById('user-display-name').innerText = firstName;
 
-        document.getElementById('db-user-name').innerText = "Salom, " + firstName + "!";
-
-        // 1. Tablarni (Sahifalarni) boshqarish tizimi
-        function switchTab(pageId, navButton) {
-            document.querySelectorAll('.app-page').forEach(page => page.classList.remove('active-page'));
-            document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active-nav'));
-
-            document.getElementById('page-' + pageId).classList.add('active-page');
-            navButton.classList.add('active-nav');
-            tg.HapticFeedback.impactOccurred('light');
+        // Tablarni almashtirish funksiyasi
+        function switchTab(tabName, btn) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
             
-            if(pageId === 'dashboard' || pageId === 'finance' || pageId === 'tasks') {
-                syncCoreData();
-            }
+            btn.classList.add('active');
+            document.getElementById('section-' + tabName).classList.add('active');
+            tg.HapticFeedback.impactOccurred('light');
         }
 
-        function navigateToPage(pageId) {
-            const navItems = document.querySelectorAll('.nav-item');
-            if(pageId === 'finance') switchTab('finance', navItems[3]);
-            if(pageId === 'tasks') switchTab('tasks', navItems[2]);
-        }
-
-        // 2. Google Sheets API (Real-time synchronization)
-        async function syncCoreData() {
+        // 1. Google Sheets-dan barcha ma'lumotlarni integratsiya qilish (Users + Finance)
+        async function loadLifeOSCore() {
             try {
-                // A) Users & Streaks
+                // A) Users ma'lumotlarini yuklash
                 const userRes = await fetch(`${SHEETDB_API_URL}/search?telegram_id=${telegramId}&sheet=Users`);
                 const userData = await userRes.json();
-                if(userData && userData.length > 0) {
-                    document.getElementById('db-streak').innerText = (userData[0].xp_points ? Math.floor(parseInt(userData[0].xp_points)/10) : 15) + " kun";
+                
+                if (userData && userData.length > 0) {
+                    const user = userData[0];
+                    const xp = parseInt(user.xp_points) || 0;
+                    const isPremium = user.premium_status === "TRUE";
+
+                    document.getElementById('xp-text').innerText = xp + " XP";
+                    document.getElementById('premium-status').innerText = isPremium ? "👑 PREMIUM" : "⚡️ ODDIY";
+                    
+                    const level = Math.floor(xp / 100) + 1;
+                    document.getElementById('level-text').innerText = "Level " + level;
+                    document.getElementById('xp-bar-fill').style.width = (xp % 100) + "%";
                 }
 
-                // B) Finance Sync (Oylik Xarajatlarni hisoblash)
+                // B) Finance (Moliya) ma'lumotlarini yuklash va hisoblash
                 const finRes = await fetch(`${SHEETDB_API_URL}/search?telegram_id=${telegramId}&sheet=Finance`);
                 const finData = await finRes.json();
-                let income = 0, expense = 0;
-                if(finData && finData.length > 0) {
-                    finData.forEach(item => {
-                        let amt = parseFloat(item.amount) || 0;
-                        if(item.type === 'Daromad') income += amt;
-                        else if(item.type === 'Xarajat') expense += amt;
-                    });
-                }
-                document.getElementById('db-expense').innerText = expense.toLocaleString('uz-UZ') + " UZS";
-                document.getElementById('fin-page-balance').innerText = (income - expense).toLocaleString('uz-UZ') + " UZS";
-
-                // C) Tasks Sync (Vazifalarni yuklash)
-                const taskRes = await fetch(`${SHEETDB_API_URL}/search?telegram_id=${telegramId}&sheet=Tasks`);
-                const taskData = await taskRes.json();
-                const container = document.getElementById('tasks-list-container');
-                container.innerHTML = "";
                 
-                let activeTasksCount = 0;
-                if(taskData && taskData.length > 0) {
-                    taskData.forEach(task => {
-                        if(task.status !== 'Bajarildi') {
-                            activeTasksCount++;
-                            container.innerHTML += `
-                                <div class="data-row">
-                                    <div class="row-info">
-                                        <h4>${task.task_title}</h4>
-                                        <p>Muddat: Bugun</p>
-                                    </div>
-                                    <button class="btn-action" onclick="completeTaskAction(this, '${task.task_title}')">Bajarildi</button>
-                                </div>`;
+                let incomeTotal = 0;
+                let expenseTotal = 0;
+
+                if (finData && finData.length > 0) {
+                    finData.forEach(row => {
+                        const amount = parseFloat(row.amount) || 0;
+                        if (row.type === "Daromad") {
+                            incomeTotal += amount;
+                        } else if (row.type === "Xarajat") {
+                            expenseTotal += amount;
                         }
                     });
                 }
-                document.getElementById('db-tasks').innerText = activeTasksCount + " ta";
-                document.getElementById('db-goals').innerText = "2/2";
+
+                const netBalance = incomeTotal - expenseTotal;
+                document.getElementById('total-balance').innerText = netBalance.toLocaleString('uz-UZ') + " UZS";
+                document.getElementById('total-income').innerText = "+" + incomeTotal.toLocaleString('uz-UZ');
+                document.getElementById('total-expense').innerText = "-" + expenseTotal.toLocaleString('uz-UZ');
 
             } catch (err) {
-                console.error("Ma'lumotlar yangilanishida xatolik:", err);
+                console.error("Life OS ma'lumotlarini yuklashda uzilish:", err);
             }
         }
 
-        // 3. Odatni yakunlash
-        async function completeHabitAction(btn, habitName, xp) {
-            if(btn.classList.contains('done')) return;
-            tg.HapticFeedback.notificationOccurred('success');
-            btn.classList.add('done'); btn.innerText = "✓ Amalda";
+        // 2. Odat bajarilganda tranzaksiyani yozish va XP ball berish
+        async function triggerHabit(btn, habitName, xpReward) {
+            if (btn.classList.contains('completed')) return;
 
-            await fetch(`${SHEETDB_API_URL}?sheet=Habits`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({"data": [{"telegram_id": telegramId, "habit_name": habitName, "streak": "1", "last_completed": "Bugun"}]})
-            });
-            syncCoreData();
+            tg.HapticFeedback.impactOccurred('heavy');
+            btn.classList.add('completed');
+            btn.innerText = "✓ Tayyor";
+
+            try {
+                // Habits varag'iga yozish
+                await fetch(`${SHEETDB_API_URL}?sheet=Habits`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        "data": [{
+                            "telegram_id": telegramId,
+                            "habit_name": habitName,
+                            "streak": "1",
+                            "last_completed": new Date().toLocaleDateString('uz-UZ')
+                        }]
+                    })
+                });
+
+                // Users varag'ida XP ballni oshirish
+                const currentXp = parseInt(document.getElementById('xp-text').innerText) || 0;
+                const updatedXp = currentXp + xpReward;
+
+                await fetch(`${SHEETDB_API_URL}/telegram_id/${telegramId}?sheet=Users`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ "data": { "xp_points": updatedXp } })
+                });
+
+                loadLifeOSCore();
+            } catch (err) {
+                console.error("Odatni saqlashda xatolik:", err);
+            }
         }
 
-        // 4. Yangi Vazifa qo'shish
-        async function submitNewTask() {
-            const title = document.getElementById('task-title').value;
-            if(!title) return;
-            tg.HapticFeedback.impactOccurred('medium');
-
-            document.getElementById('task-title').value = "";
-            await fetch(`${SHEETDB_API_URL}?sheet=Tasks`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({"data": [{"telegram_id": telegramId, "task_title": title, "status": "Faol"}]})
-            });
-            syncCoreData();
-        }
-
-        // 5. Vazifani o'chirish / Bajarildi qilish
-        async function completeTaskAction(btn, title) {
-            tg.HapticFeedback.notificationOccurred('success');
-            btn.parentElement.remove();
-            await fetch(`${SHEETDB_API_URL}/task_title/${title}?sheet=Tasks`, {
-                method: 'PUT',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({"data": {"status": "Bajarildi"}})
-            });
-            syncCoreData();
-        }
-
-        // 6. Moliya tranzaksiyasini kiritish
+        // 3. Moliyaviy operatsiyani shakllantirish va jadvalga jo'natish
         async function submitFinanceOperation() {
-            const type = document.getElementById('fin-operation-type').value;
-            const amount = document.getElementById('fin-operation-amount').value;
-            const comment = document.getElementById('fin-operation-comment').value || "Izohsiz";
+            const type = document.getElementById('fin-type').value;
+            const amount = document.getElementById('fin-amount').value;
+            const category = document.getElementById('fin-category').value;
+            const comment = document.getElementById('fin-comment').value || "Izohsiz";
 
-            if(!amount) return;
+            if (!amount || amount <= 0) {
+                tg.showAlert("Iltimos, miqdorni to'g'ri kiriting!");
+                return;
+            }
+
             tg.HapticFeedback.notificationOccurred('success');
+            
+            const payload = {
+                "data": [{
+                    "telegram_id": telegramId,
+                    "type": type,
+                    "amount": amount,
+                    "category": category,
+                    "comment": comment,
+                    "date": new Date().toLocaleDateString('uz-UZ')
+                }]
+            };
 
-            document.getElementById('fin-operation-amount').value = "";
-            document.getElementById('fin-operation-comment').value = "";
+            try {
+                const response = await fetch(`${SHEETDB_API_URL}?sheet=Finance`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
 
-            await fetch(`${SHEETDB_API_URL}?sheet=Finance`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({"data": [{"telegram_id": telegramId, "type": type, "amount": amount, "category": comment, "comment": comment, "date": "Bugun"}]})
-            });
-            tg.showAlert("Tranzaksiya muvaffaqiyatli saqlandi! 📊");
-            syncCoreData();
+                if (response.ok) {
+                    document.getElementById('fin-amount').value = "";
+                    document.getElementById('fin-comment').value = "";
+                    tg.showAlert("Tranzaksiya muvaffaqiyatli saqlandi! 📊");
+                    loadLifeOSCore();
+                }
+            } catch (err) {
+                console.error("Moliyani saqlashda uzilish:", err);
+            }
         }
 
-        // Ilk yuklanishda sinxronizatsiya
-        syncCoreData();
+        // Birinchi yuklanish
+        loadLifeOSCore();
     </script>
 </body>
 </html>
