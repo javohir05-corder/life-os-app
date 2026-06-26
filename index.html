@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Life OS — Premium Notion Edition</title>
+    <title>Life OS — Premium Telegram Edition</title>
+    <!-- Telegram WebApp JS -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
@@ -56,8 +57,8 @@
         }
         .row-left { display: flex; align-items: center; gap: 14px; }
         .row-icon-box { width: 40px; height: 40px; background: rgba(255, 255, 255, 0.04); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
-        .row-text h4 { font-size: 14px; font-weight: 600; }
-        .row-text p { font-size: 11px; color: var(--text-muted); }
+        .row-text h4 { font-size: 15px; font-weight: 600; }
+        .row-text p { font-size: 12px; color: var(--text-muted); }
 
         .btn-premium-action { background: rgba(99, 102, 241, 0.15); border: 1px solid rgba(99, 102, 241, 0.3); color: #a5b4fc; padding: 8px 16px; border-radius: 30px; font-size: 12px; font-weight: 600; cursor: pointer; }
         .btn-premium-action.completed { background: var(--accent-green); border-color: transparent; color: #052e16; }
@@ -87,6 +88,7 @@
 </head>
 <body>
 
+    <!-- TOP HEADER -->
     <div class="premium-header">
         <div class="profile-area">
             <div class="avatar-glow"><img src="https://api.dicebear.com/7.x/bottts/svg?seed=Sheikh" alt="Avatar"></div>
@@ -94,6 +96,7 @@
         </div>
     </div>
 
+    <!-- PAGE 1: ASOSIY PANEL -->
     <div id="page-dashboard" class="app-page active-page">
         <div class="glass-premium-card" style="background: linear-gradient(135deg, rgba(30,27,75,0.6) 0%, rgba(15,12,38,0.6) 100%);">
             <p style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">Mening Xarajatlarim (Jami)</p>
@@ -108,6 +111,7 @@
         </div>
     </div>
 
+    <!-- PAGE 2: ODATLAR -->
     <div id="page-habits" class="app-page">
         <div class="glass-premium-card">
             <div class="premium-input-group">
@@ -120,6 +124,7 @@
         <div id="habits-list-container"></div>
     </div>
 
+    <!-- PAGE 3: VAZIFALAR -->
     <div id="page-tasks" class="app-page">
         <div class="glass-premium-card">
             <div class="premium-input-group">
@@ -132,6 +137,7 @@
         <div id="tasks-list-container"></div>
     </div>
 
+    <!-- PAGE 4: MOLIYA -->
     <div id="page-finance" class="app-page">
         <div class="glass-premium-card">
             <div class="premium-input-group">
@@ -152,12 +158,13 @@
             </div>
             <div class="premium-input-group">
                 <label>Tranzaksiya Izohi</label>
-                <input type="text" id="fin-operation-name" placeholder="Masalan: Kafe xarajatlari">
+                <input type="text" id="fin-operation-name" placeholder="Masalan: Bot orqali test xarajat">
             </div>
             <button class="btn-premium-submit" style="background: var(--accent-pink);" onclick="submitFinanceOperation()">Xarajatni Saqlash</button>
         </div>
     </div>
 
+    <!-- PAGE 5: MAQSADLAR -->
     <div id="page-goals" class="app-page">
         <div class="glass-premium-card">
             <div class="premium-input-group">
@@ -174,6 +181,7 @@
         <div id="goals-list-container"></div>
     </div>
 
+    <!-- FLOATING TAB BAR -->
     <div class="image_0c6934-tab-bar">
         <button class="tab-item-premium active-premium-tab" onclick="switchTab('dashboard', this)"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f3e0/512.webp"><div>Asosiy</div></button>
         <button class="tab-item-premium" onclick="switchTab('habits', this)"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f4aa_1f3fb/512.webp"><div>Odatlar</div></button>
@@ -186,11 +194,11 @@
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        // Sening yagona SheetDB API manziling (Faqat Sheet1 bilan ishlaydi)
+        // SheetDB API URL sening loyihangga yo'naltirilgan
         const SHEETDB_API_URL = "https://sheetdb.io/api/v1/oor0mxsj20xig";
         
         const telegramId = tg.initDataUnsafe?.user?.id ? String(tg.initDataUnsafe.user.id) : "6627458183";
-        const firstName = tg.initDataUnsafe?.user?.first_name || "Foydalanuvchi";
+        const firstName = tg.initDataUnsafe?.user?.first_name || "Yorqin";
 
         document.getElementById('db-user-name').innerText = "Salom, " + firstName + "!";
 
@@ -214,90 +222,96 @@
             switchTab(pageId, btns[navIndex]);
         }
 
-        // BARCHA MA'LUMOTLARNI BITTA SHEET1 DAN QIDIRIB FILTRLASH
+        // MA'LUMOTLARNI YUKLASH VA SINXRONIZATSIYA QILISH
         async function syncCoreData() {
             try {
-                const response = await fetch(`${SHEETDB_API_URL}/search?telegram_id=${telegramId}`);
-                const allData = await response.json();
-                
-                if (!Array.isArray(allData)) return;
+                // 1. Odatlarni olish
+                const habitRes = await fetch(`${SHEETDB_API_URL}/search?telegram_id=${telegramId}&sheet=Habits`);
+                const habitData = await habitRes.json();
+                const habitContainer = document.getElementById('habits-list-container');
+                habitContainer.innerHTML = "";
+                if(Array.isArray(habitData) && habitData.length > 0) {
+                    document.getElementById('db-streak').innerText = habitData.length + " ta";
+                    habitData.forEach(h => {
+                        habitContainer.innerHTML += `
+                            <div class="premium-row">
+                                <div class="row-left"><div class="row-icon-box">💪</div><div class="row-text"><h4>${h.habit_name}</h4><p>Xolati: ${h.last_completed}</p></div></div>
+                                <button class="btn-premium-action ${h.last_completed === 'Bajarildi' ? 'completed' : ''}" onclick="completeHabitAction(this, '${h.habit_name}')">${h.last_completed === 'Bajarildi' ? '✓ Done' : 'Bajarish'}</button>
+                            </div>`;
+                    });
+                } else {
+                    document.getElementById('db-streak').innerText = "0 ta";
+                    habitContainer.innerHTML = "<p style='text-align:center;color:var(--text-muted);font-size:13px;padding:20px;'>Odatlar yo'q.</p>";
+                }
 
-                // 1. Moliya hisobi (Xarajatlar)
+                // 2. Xarajatlar (Sheet1) analitikasini o'qish
+                const finRes = await fetch(`${SHEETDB_API_URL}?sheet=Sheet1`);
+                const finData = await finRes.json();
                 let totalExpense = 0;
-                const financeItems = allData.filter(item => item.Tur === 'Xarajat');
-                financeItems.forEach(item => { totalExpense += parseFloat(item.Nik) || 0; });
+                if(Array.isArray(finData) && finData.length > 0) {
+                    finData.forEach(item => { totalExpense += parseFloat(item.Nik) || 0; });
+                }
                 document.getElementById('db-expense').innerText = totalExpense.toLocaleString('uz-UZ') + " UZS";
                 document.getElementById('fin-page-balance').innerText = totalExpense.toLocaleString('uz-UZ') + " UZS";
 
-                // 2. Odatlar ro'yxati
-                const habitItems = allData.filter(item => item.Tur === 'Odat');
-                const habitContainer = document.getElementById('habits-list-container');
-                habitContainer.innerHTML = "";
-                document.getElementById('db-streak').innerText = habitItems.length + " ta";
-                if(habitItems.length > 0) {
-                    habitItems.forEach(h => {
-                        habitContainer.innerHTML += `
-                            <div class="premium-row">
-                                <div class="row-left"><div class="row-icon-box">💪</div><div class="row-text"><h4>${h.Nom}</h4><p>Xolati: ${h.Kategoriya}</p></div></div>
-                                <button class="btn-premium-action ${h.Kategoriya === 'Bajarildi' ? 'completed' : ''}" onclick="completeHabitAction(this, '${h.Nom}')">${h.Kategoriya === 'Bajarildi' ? '✓ Done' : 'Bajarish'}</button>
-                            </div>`;
-                    });
-                } else {
-                    habitContainer.innerHTML = "<p style='text-align:center;color:var(--text-muted);font-size:12px;padding:20px;'>Odatlar yo'q. Yuqoridan yangi odat qo'shing!</p>";
-                }
-
-                // 3. Vazifalar ro'yxati
-                const taskItems = allData.filter(item => item.Tur === 'Vazifa' && item.Kategoriya !== 'Bajarildi');
+                // 3. Vazifalarni yuklash
+                const taskRes = await fetch(`${SHEETDB_API_URL}/search?telegram_id=${telegramId}&sheet=Tasks`);
+                const taskData = await taskRes.json();
                 const taskContainer = document.getElementById('tasks-list-container');
                 taskContainer.innerHTML = "";
-                document.getElementById('db-tasks').innerText = taskItems.length + " ta";
-                if(taskItems.length > 0) {
-                    taskItems.forEach(t => {
-                        taskContainer.innerHTML += `
-                            <div class="premium-row">
-                                <div class="row-left"><div class="row-icon-box">📌</div><div class="row-text"><h4>${t.Nom}</h4></div></div>
-                                <button class="btn-premium-action" onclick="completeTaskAction(this, '${t.Nom}')">Bajarildi</button>
-                            </div>`;
+                let activeTasks = 0;
+                if(Array.isArray(taskData) && taskData.length > 0) {
+                    taskData.forEach(t => {
+                        if(t.status !== 'Bajarildi') {
+                            activeTasks++;
+                            taskContainer.innerHTML += `
+                                <div class="premium-row">
+                                    <div class="row-left"><div class="row-icon-box">📌</div><div class="row-text"><h4>${t.task_title}</h4></div></div>
+                                    <button class="btn-premium-action" onclick="completeTaskAction(this, '${t.task_title}')">Bajarildi</button>
+                                </div>`;
+                        }
                     });
-                } else {
-                    taskContainer.innerHTML = "<p style='text-align:center;color:var(--text-muted);font-size:12px;padding:20px;'>Faol vazifalar mavjud emas.</p>";
+                }
+                document.getElementById('db-tasks').innerText = activeTasks + " ta";
+                if(activeTasks === 0) {
+                    taskContainer.innerHTML = "<p style='text-align:center;color:var(--text-muted);font-size:13px;padding:20px;'>Faol vazifalar yo'q.</p>";
                 }
 
-                // 4. Maqsadlar ro'yxati
-                const goalItems = allData.filter(item => item.Tur === 'Maqsad');
+                // 4. Maqsadlarni yuklash
+                const goalRes = await fetch(`${SHEETDB_API_URL}/search?telegram_id=${telegramId}&sheet=Goals`);
+                const goalData = await goalRes.json();
                 const goalContainer = document.getElementById('goals-list-container');
                 goalContainer.innerHTML = "";
-                document.getElementById('db-goals').innerText = goalItems.length + " ta";
-                if(goalItems.length > 0) {
-                    goalItems.forEach(g => {
-                        let pct = Math.min(Math.max(parseInt(g.Nik) || 0, 0), 100);
+                if(Array.isArray(goalData) && goalData.length > 0) {
+                    document.getElementById('db-goals').innerText = goalData.length + " ta";
+                    goalData.forEach(g => {
+                        let pct = Math.min(Math.max(parseInt(g.progress_percent) || 0, 0), 100);
                         let strokeDash = (pct / 100) * 138;
                         goalContainer.innerHTML += `
                             <div class="widget-progress-container">
-                                <div style="display:flex; align-items:center; gap:12px;"><span style="font-size:22px;">🎯</span><div><h4>${g.Nom}</h4></div></div>
+                                <div style="display:flex; align-items:center; gap:12px;"><span style="font-size:22px;">🎯</span><div><h4>${g.goal_title}</h4></div></div>
                                 <div style="display:flex; align-items:center; gap:10px;"><span style="font-weight:700;color:#6366f1;">${pct}%</span>
                                     <svg class="circle-svg"><circle class="circle-bg" cx="24" cy="24" r="22"></circle><circle class="circle-fill" cx="24" cy="24" r="22" style="stroke-dasharray: ${strokeDash} 138;"></circle></svg>
                                 </div>
                             </div>`;
                     });
                 } else {
-                    goalContainer.innerHTML = "<p style='text-align:center;color:var(--text-muted);font-size:12px;padding:20px;'>Maqsadlar kiritilmagan.</p>";
+                    document.getElementById('db-goals').innerText = "0 ta";
+                    goalContainer.innerHTML = "<p style='text-align:center;color:var(--text-muted);font-size:13px;padding:20px;'>Maqsadlar mavjud emas.</p>";
                 }
-
             } catch (err) { console.error("Sinxronizatsiya xatosi:", err); }
         }
 
-        // 1. ODAT QO'SHISH
+        // FUNKSIYALAR
         async function submitNewHabit() {
             const title = document.getElementById('habit-title-input').value.trim();
-            if(!title) return tg.showAlert("Odat nomini kiriting!");
+            if(!title) return tg.showAlert("Nom kiriting!");
             document.getElementById('habit-title-input').value = "";
-            
-            await fetch(SHEETDB_API_URL, {
+            await fetch(`${SHEETDB_API_URL}?sheet=Habits`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
-                    "data": [{"Sana": getFormattedDate(), "Kategoriya": "Faol", "Nom": title, "Nik": "0", "telegram_id": telegramId, "Tur": "Odat"}]
+                    "data": [{"telegram_id": telegramId, "habit_name": title, "streak": "0", "last_completed": "Faol"}]
                 })
             });
             tg.showAlert("Odat qo'shildi! 💪");
@@ -307,78 +321,73 @@
         async function completeHabitAction(btn, name) {
             if(btn.classList.contains('completed')) return;
             btn.classList.add('completed'); btn.innerText = "✓ Done";
-            await fetch(`${SHEETDB_API_URL}/Nom/${encodeURIComponent(name)}`, {
+            await fetch(`${SHEETDB_API_URL}/habit_name/${encodeURIComponent(name)}?sheet=Habits`, {
                 method: 'PUT',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({"data": {"Kategoriya": "Bajarildi"}})
+                body: JSON.stringify({"data": {"last_completed": "Bajarildi"}})
             });
             syncCoreData();
         }
 
-        // 2. VAZIFA QO'SHISH
         async function submitNewTask() {
             const title = document.getElementById('task-title').value.trim();
             if(!title) return;
             document.getElementById('task-title').value = "";
-            
-            await fetch(SHEETDB_API_URL, {
+            await fetch(`${SHEETDB_API_URL}?sheet=Tasks`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
-                    "data": [{"Sana": getFormattedDate(), "Kategoriya": "Faol", "Nom": title, "Nik": "0", "telegram_id": telegramId, "Tur": "Vazifa"}]
+                    "data": [{"telegram_id": telegramId, "task_title": title, "status": "Faol"}]
                 })
             });
             syncCoreData();
         }
 
-        async function completeTaskAction(btn, name) {
+        async function completeTaskAction(btn, title) {
             btn.parentElement.remove();
-            await fetch(`${SHEETDB_API_URL}/Nom/${encodeURIComponent(name)}`, {
+            await fetch(`${SHEETDB_API_URL}/task_title/${encodeURIComponent(title)}?sheet=Tasks`, {
                 method: 'PUT',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({"data": {"Kategoriya": "Bajarildi"}})
+                body: JSON.stringify({"data": {"status": "Bajarildi"}})
             });
             syncCoreData();
         }
 
-        // 3. XARAJAT QO'SHISH
         async function submitFinanceOperation() {
             const category = document.getElementById('fin-operation-category').value;
             const amount = document.getElementById('fin-operation-amount').value;
             const nameInput = document.getElementById('fin-operation-name').value.trim() || "Xarajat";
 
-            if(!amount) return tg.showAlert("Iltimos, summani kiriting!");
+            if(!amount) return tg.showAlert("Summani kiriting!");
             document.getElementById('fin-operation-amount').value = "";
             document.getElementById('fin-operation-name').value = "";
 
-            await fetch(SHEETDB_API_URL, {
+            await fetch(`${SHEETDB_API_URL}?sheet=Sheet1`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
-                    "data": [{"Sana": getFormattedDate(), "Kategoriya": category, "Nom": nameInput, "Nik": amount, "telegram_id": telegramId, "Tur": "Xarajat"}]
+                    "data": [{"Sana": getFormattedDate(), "Kategoriya": category, "Nom": nameInput, "Nik": amount, "telegram_id": telegramId}]
                 })
             });
-            tg.showAlert("Xarajat jadvalga yozildi! 💸");
+            tg.showAlert("Xarajat saqlandi! 💸");
             syncCoreData();
         }
 
-        // 4. MAQSAD QO'SHISH
         async function submitNewGoal() {
             const title = document.getElementById('goal-title').value.trim();
             const progress = document.getElementById('goal-progress').value || "0";
-            if(!title) return tg.showAlert("Maqsad nomini kiriting!");
-            
+            if(!title) return tg.showAlert("Maqsad kiriting!");
             document.getElementById('goal-title').value = "";
             document.getElementById('goal-progress').value = "";
 
-            await fetch(SHEETDB_API_URL, {
+            await fetch(`${SHEETDB_API_URL}?sheet=Goals`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
-                    "data": [{"Sana": getFormattedDate(), "Kategoriya": "Strategik", "Nom": title, "Nik": progress, "telegram_id": telegramId, "Tur": "Maqsad"}]
+                    "data": [{"telegram_id": telegramId, "goal_title": title, "progress_percent": progress}]
                 })
             });
-            tg.showAlert("Maqsad saqlandi! 🎯");
+            tg.showAlert("Maqsad kiritildi! 🎯");
             syncCoreData();
         }
 
