@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Life OS — Premium Notion & Telegram Edition</title>
+    <!-- Telegram WebApp JS -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
@@ -15,472 +16,138 @@
             --text-muted: #8e8e9f;
             --accent-blur: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
             --accent-glow: 0 8px 32px 0 rgba(99, 102, 241, 0.3);
-            --accent-cyan: #06b6d4;
             --accent-pink: #ec4899;
             --accent-green: #10b981;
         }
 
         * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            -webkit-user-select: none;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
+            margin: 0; padding: 0; box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+            -webkit-user-select: none; user-select: none;
         }
 
         body {
-            background: var(--bg-main);
-            background-image: var(--bg-gradient);
-            background-attachment: fixed;
-            color: var(--text-main);
-            padding: 20px 16px 140px 16px;
-            min-height: 100vh;
-            overflow-x: hidden;
+            background: var(--bg-main); background-image: var(--bg-gradient); background-attachment: fixed;
+            color: var(--text-main); padding: 20px 16px 140px 16px; min-height: 100vh; overflow-x: hidden;
         }
 
-        /* Sahifalar silliq animatsiyasi */
-        .app-page {
-            display: none;
-            opacity: 0;
-            transform: scale(0.98) translateY(10px);
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        
-        .app-page.active-page {
-            display: block;
-            opacity: 1;
-            transform: scale(1) translateY(0);
-        }
+        .app-page { display: none; opacity: 0; transform: scale(0.98) translateY(10px); transition: all 0.3s ease; }
+        .app-page.active-page { display: block; opacity: 1; transform: scale(1) translateY(0); }
 
-        /* Header UI */
-        .premium-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-        }
-        .profile-area {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .avatar-glow {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: var(--accent-blur);
-            padding: 2px;
-            box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
-        }
-        .avatar-glow img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: #111;
-            object-fit: cover;
-        }
-        .user-meta h2 { font-size: 18px; font-weight: 700; letter-spacing: -0.4px; }
-        .user-meta p { color: var(--text-muted); font-size: 12px; font-weight: 500; }
-        
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .notif-btn {
-            background: var(--glass-card);
-            border: 1px solid var(--glass-border);
-            width: 38px;
-            height: 38px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 16px;
-        }
+        .premium-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        .profile-area { display: flex; align-items: center; gap: 12px; }
+        .avatar-glow { width: 44px; height: 44px; border-radius: 50%; background: var(--accent-blur); padding: 2px; }
+        .avatar-glow img { width: 100%; height: 100%; border-radius: 50%; background: #111; object-fit: cover; }
+        .user-meta h2 { font-size: 18px; font-weight: 700; }
+        .user-meta p { color: var(--text-muted); font-size: 12px; }
 
-        /* Glowing Search Bar */
-        .search-container {
-            position: relative;
-            margin-bottom: 24px;
-        }
-        .search-container input {
-            width: 100%;
-            background: rgba(15, 15, 27, 0.75);
-            border: 1px solid var(--glass-border);
-            padding: 14px 16px 14px 44px;
-            border-radius: 20px;
-            color: white;
-            font-size: 14px;
-            outline: none;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-        .search-container input:focus {
-            border-color: #6366f1;
-            box-shadow: 0 0 15px rgba(99, 102, 241, 0.25);
-        }
-        .search-icon {
-            position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-            font-size: 16px;
-        }
-
-        /* Glassmorphic Cards */
         .glass-premium-card {
-            background: var(--glass-card);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            padding: 20px;
-            margin-bottom: 20px;
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            background: var(--glass-card); border: 1px solid var(--glass-border); border-radius: 24px;
+            padding: 20px; margin-bottom: 20px; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
         }
 
-        /* Grid stats layout */
-        .stats-bento-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-bottom: 24px;
-        }
-        .bento-card {
-            background: rgba(30, 30, 50, 0.35);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            min-height: 105px;
-            backdrop-filter: blur(10px);
-            transition: transform 0.2s;
-        }
-        .bento-card:active { transform: scale(0.97); }
-        .bento-card p { font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-        .bento-card h3 { font-size: 20px; font-weight: 700; margin-top: 8px; letter-spacing: -0.5px; }
+        .stats-bento-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 24px; }
+        .bento-card { background: rgba(30, 30, 50, 0.35); border: 1px solid var(--glass-border); border-radius: 20px; padding: 16px; min-height: 105px; }
+        .bento-card p { font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
+        .bento-card h3 { font-size: 20px; font-weight: 700; margin-top: 8px; }
 
-        /* Modern rounded pills filter buttons */
-        .filter-pills-scroll {
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            padding-bottom: 4px;
-            margin-bottom: 16px;
-        }
-        .filter-pills-scroll::-webkit-scrollbar { display: none; }
-        
-        .pill-button {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--glass-border);
-            color: var(--text-muted);
-            padding: 8px 18px;
-            border-radius: 30px;
-            font-size: 13px;
-            font-weight: 600;
-            white-space: nowrap;
-            cursor: pointer;
-        }
-        .pill-button.active-pill {
-            background: var(--accent-blur);
-            color: white;
-            border-color: transparent;
-            box-shadow: var(--accent-glow);
-        }
-
-        /* List Items */
-        .section-header {
-            font-size: 12px;
-            font-weight: 700;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            margin: 10px 4px 14px 4px;
-        }
         .premium-row {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.03);
-            border-radius: 18px;
-            padding: 14px 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
+            background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.03);
+            border-radius: 18px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;
         }
         .row-left { display: flex; align-items: center; gap: 14px; }
-        .row-icon-box {
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.04);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-        }
-        .row-text h4 { font-size: 15px; font-weight: 600; letter-spacing: -0.2px; }
-        .row-text p { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+        .row-icon-box { width: 40px; height: 40px; background: rgba(255, 255, 255, 0.04); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        .row-text h4 { font-size: 15px; font-weight: 600; }
+        .row-text p { font-size: 12px; color: var(--text-muted); }
 
-        /* Action Pill Buttons */
-        .btn-premium-action {
-            background: rgba(99, 102, 241, 0.15);
-            border: 1px solid rgba(99, 102, 241, 0.3);
-            color: #a5b4fc;
-            padding: 8px 16px;
-            border-radius: 30px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        .btn-premium-action.completed {
-            background: var(--accent-green);
-            border-color: transparent;
-            color: #052e16;
-            font-weight: 700;
-        }
+        .btn-premium-action { background: rgba(99, 102, 241, 0.15); border: 1px solid rgba(99, 102, 241, 0.3); color: #a5b4fc; padding: 8px 16px; border-radius: 30px; font-size: 12px; font-weight: 600; }
+        .btn-premium-action.completed { background: var(--accent-green); border-color: transparent; color: #052e16; }
 
-        /* Inputs & Form styling */
-        .premium-input-group {
-            margin-bottom: 16px;
-        }
-        .premium-input-group label {
-            display: block;
-            font-size: 11px;
-            color: var(--text-muted);
-            font-weight: 600;
-            text-transform: uppercase;
-            margin-bottom: 8px;
-            margin-left: 4px;
-        }
-        .premium-input-group input, .premium-input-group select {
-            width: 100%;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--glass-border);
-            padding: 14px 18px;
-            border-radius: 18px;
-            color: white;
-            font-size: 14px;
-            outline: none;
-        }
-        .premium-input-group input:focus {
-            border-color: #a855f7;
-        }
+        .premium-input-group { margin-bottom: 16px; }
+        .premium-input-group label { display: block; font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; margin-bottom: 8px; }
+        .premium-input-group input, .premium-input-group select { width: 100%; background: rgba(0, 0, 0, 0.3); border: 1px solid var(--glass-border); padding: 14px 18px; border-radius: 18px; color: white; font-size: 14px; outline: none; }
 
-        .btn-premium-submit {
-            width: 100%;
-            background: var(--accent-blur);
-            color: white;
-            border: none;
-            padding: 15px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 600;
-            box-shadow: var(--accent-glow);
-            cursor: pointer;
-        }
+        .btn-premium-submit { width: 100%; background: var(--accent-blur); color: white; border: none; padding: 15px; border-radius: 20px; font-size: 14px; font-weight: 600; box-shadow: var(--accent-glow); cursor: pointer; }
 
-        /* Interactive Widgets with Progress Circles */
-        .widget-progress-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: rgba(255,255,255,0.02);
-            padding: 14px;
-            border-radius: 18px;
-            margin-bottom: 12px;
-        }
-        .circle-svg {
-            width: 48px;
-            height: 48px;
-            transform: rotate(-90deg);
-        }
+        .widget-progress-container { display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.02); padding: 14px; border-radius: 18px; margin-bottom: 12px; }
+        .circle-svg { width: 48px; height: 48px; transform: rotate(-90deg); }
         .circle-bg { fill: none; stroke: rgba(255,255,255,0.05); stroke-width: 4; }
-        .circle-fill { fill: none; stroke: #6366f1; stroke-width: 4; stroke-linecap: round; transition: stroke-dasharray 0.5s ease; }
+        .circle-fill { fill: none; stroke: #6366f1; stroke-width: 4; stroke-linecap: round; }
 
-        /* Beautiful Empty State */
-        .empty-state-container {
-            text-align: center;
-            padding: 40px 20px;
-        }
-        .empty-illustration {
-            font-size: 64px;
-            margin-bottom: 16px;
-            filter: drop-shadow(0 10px 20px rgba(99,102,241,0.2));
-        }
-        .empty-state-container h4 { font-size: 16px; color: var(--text-main); margin-bottom: 6px; }
-        .empty-state-container p { font-size: 13px; color: var(--text-muted); }
-
-        /* FLOATING TAB BAR */
         .image_0c6934-tab-bar {
-            position: fixed;
-            bottom: 24px;
-            left: 16px;
-            right: 16px;
-            height: 76px;
-            background: rgba(26, 12, 18, 0.72);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
-            border-radius: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            padding: 0 10px;
-            z-index: 999999;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), inset 0 1px 2px rgba(255,255,255,0.1);
+            position: fixed; bottom: 24px; left: 16px; right: 16px; height: 76px; background: rgba(26, 12, 18, 0.72);
+            backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border-radius: 40px; border: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex; justify-content: space-around; align-items: center; padding: 0 10px; z-index: 999999;
         }
-        
-        .tab-item-premium {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background: none;
-            border: none;
-            color: rgba(255, 255, 255, 0.45);
-            font-size: 11px;
-            font-weight: 500;
-            cursor: pointer;
-            width: 18%;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .tab-item-premium img {
-            width: 28px;
-            height: 28px;
-            object-fit: contain;
-            margin-bottom: 4px;
-            transition: transform 0.3s ease, filter 0.3s ease;
-            filter: grayscale(20%) brightness(85%);
-        }
-
-        .tab-item-premium.active-premium-tab {
-            color: #ffffff !important;
-            font-weight: 700;
-        }
-        .tab-item-premium.active-premium-tab img {
-            transform: scale(1.22) translateY(-4px);
-            filter: grayscale(0%) brightness(110%) drop-shadow(0 4px 10px rgba(255,255,255,0.2));
-        }
+        .tab-item-premium { display: flex; flex-direction: column; align-items: center; background: none; border: none; color: rgba(255, 255, 255, 0.45); font-size: 11px; width: 18%; cursor: pointer; }
+        .tab-item-premium img { width: 28px; height: 28px; margin-bottom: 4px; }
+        .tab-item-premium.active-premium-tab { color: #ffffff !important; font-weight: 700; }
+        .tab-item-premium.active-premium-tab img { transform: scale(1.15); }
+        .section-header { font-size: 11px; color: var(--text-muted); font-weight: bold; text-transform: uppercase; margin: 15px 0 10px 5px; }
     </style>
 </head>
 <body>
 
+    <!-- TOP HEADER -->
     <div class="premium-header">
         <div class="profile-area">
-            <div class="avatar-glow">
-                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Sheikh" alt="Avatar">
-            </div>
-            <div class="user-meta">
-                <h2 id="db-user-name">Salom!</h2>
-                <p>Premium Member 💎</p>
-            </div>
-        </div>
-        <div class="header-actions">
-            <div class="notif-btn">🔔</div>
+            <div class="avatar-glow"><img src="https://api.dicebear.com/7.x/bottts/svg?seed=Sheikh" alt="Avatar"></div>
+            <div class="user-meta"><h2 id="db-user-name">Salom!</h2><p>Premium Member 💎</p></div>
         </div>
     </div>
 
-    <div class="search-container">
-        <span class="search-icon">🔍</span>
-        <input type="text" placeholder="Tezkor qidiruv yoki Notion buyruqlari...">
-    </div>
-
+    <!-- PAGE 1: ASOSIY PANEL -->
     <div id="page-dashboard" class="app-page active-page">
-        <div class="glass-premium-card" style="background: linear-gradient(135deg, rgba(30,27,75,0.6) 0%, rgba(15,12,38,0.6) 100%); border-color: rgba(99,102,241,0.2);">
-            <p style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Umumiy Balans</p>
-            <h1 id="fin-page-balance" style="font-size: 32px; font-weight: 800; margin-top: 4px; background: linear-gradient(to right, #fff, #c7d2fe); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">0 UZS</h1>
-            <div style="display: flex; gap: 20px; margin-top: 16px; font-size: 13px;">
-                <div><span style="color:var(--accent-green);">↗</span> Kirim: <strong id="db-income-log" style="color:white;">0</strong></div>
-                <div><span style="color:var(--accent-pink);">↘</span> Chiqim: <strong id="db-expense" style="color:white;">0</strong></div>
-            </div>
+        <div class="glass-premium-card" style="background: linear-gradient(135deg, rgba(30,27,75,0.6) 0%, rgba(15,12,38,0.6) 100%);">
+            <p style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">Mening Xarajatlarim (Jami)</p>
+            <h1 id="fin-page-balance" style="font-size: 32px; font-weight: 800; margin-top: 4px;">0 UZS</h1>
         </div>
 
-        <div class="section-header">Statistika Paneli</div>
         <div class="stats-bento-grid">
-            <div class="bento-card" onclick="switchTabDirect('habits', 1)">
-                <p>💪 Odatlar</p>
-                <h3 id="db-streak" style="color: #fb923c;">15 kun</h3>
-            </div>
-            <div class="bento-card" onclick="switchTabDirect('tasks', 2)">
-                <p>✅ Vazifalar</p>
-                <h3 id="db-tasks" style="color: #60a5fa;">0 ta</h3>
-            </div>
-            <div class="bento-card" onclick="switchTabDirect('finance', 3)">
-                <p>📈 Unumdorlik</p>
-                <h3 style="color: #34d399;">94%</h3>
-            </div>
-            <div class="bento-card" onclick="switchTabDirect('goals', 4)">
-                <p>🎯 Maqsadlar</p>
-                <h3 id="db-goals" style="color: #c084fc;">0 ta</h3>
-            </div>
+            <div class="bento-card" onclick="switchTabDirect('habits', 1)"><p>💪 Odatlar</p><h3 id="db-streak" style="color: #fb923c;">0 ta</h3></div>
+            <div class="bento-card" onclick="switchTabDirect('tasks', 2)"><p>✅ Vazifalar</p><h3 id="db-tasks" style="color: #60a5fa;">0 ta</h3></div>
+            <div class="bento-card" onclick="switchTabDirect('finance', 3)"><p>💸 Xarajat</p><h3 id="db-expense" style="color: #f43f5e;">0 UZS</h3></div>
+            <div class="bento-card" onclick="switchTabDirect('goals', 4)"><p>🎯 Maqsadlar</p><h3 id="db-goals" style="color: #c084fc;">0 ta</h3></div>
         </div>
     </div>
 
+    <!-- PAGE 2: ODATLAR (YANGI ODAT QO'SHISH INTERFEYSI) -->
     <div id="page-habits" class="app-page">
-        <div class="filter-pills-scroll">
-            <button class="pill-button active-pill">Barchasi</button>
-            <button class="pill-button">Sog'liq</button>
-            <button class="pill-button">Ta'lim</button>
-            <button class="pill-button">Raqamli intizom</button>
-        </div>
-
         <div class="glass-premium-card">
-            <div class="premium-row">
-                <div class="row-left">
-                    <div class="row-icon-box">📖</div>
-                    <div class="row-text"><h4>Kitob o'qish</h4><p>Kamida 15 sahifa</p></div>
-                </div>
-                <button class="btn-premium-action" onclick="completeHabitAction(this, 'Kitob o\'qish')">+15 XP</button>
+            <div class="premium-input-group">
+                <label>Yangi Odat Nomi</label>
+                <input type="text" id="habit-title-input" placeholder="Masalan: SAT Math 10 ta masala">
             </div>
-            <div class="premium-row">
-                <div class="row-left">
-                    <div class="row-icon-box">💻</div>
-                    <div class="row-text"><h4>Dasturlash</h4><p>Life OS Premium moduli</p></div>
-                </div>
-                <button class="btn-premium-action" onclick="completeHabitAction(this, 'Dasturlash')">+25 XP</button>
-            </div>
-            <div class="premium-row">
-                <div class="row-left">
-                    <div class="row-icon-box">🇬🇧</div>
-                    <div class="row-text"><h4>SAT Ingliz tili</h4><p>Vocabulary & Reading</p></div>
-                </div>
-                <button class="btn-premium-action" onclick="completeHabitAction(this, 'Ingliz tili')">+20 XP</button>
-            </div>
+            <button class="btn-premium-submit" onclick="submitNewHabit()">Odatni Qo'shish</button>
         </div>
+        <div class="section-header">Mening Odatlarim</div>
+        <div id="habits-list-container"></div>
     </div>
 
+    <!-- PAGE 3: VAZIFALAR -->
     <div id="page-tasks" class="app-page">
         <div class="glass-premium-card">
             <div class="premium-input-group">
                 <label>Yangi vazifa nomi</label>
-                <input type="text" id="task-title" placeholder="Masalan: SAT Mock imtihonini tahlil qilish">
+                <input type="text" id="task-title" placeholder="Masalan: Insho loyihasini tugatish">
             </div>
             <button class="btn-premium-submit" onclick="submitNewTask()">Vazifani kiritish</button>
         </div>
-
         <div class="section-header">Faol vazifalar ro'yxati</div>
         <div id="tasks-list-container"></div>
     </div>
 
+    <!-- PAGE 4: MOLIYA (XARAJATLAR) -->
     <div id="page-finance" class="app-page">
         <div class="glass-premium-card">
             <div class="premium-input-group">
                 <label>Kategoriya</label>
                 <select id="fin-operation-category">
-                    <option value="Umumiy">Umumiy</option>
                     <option value="Ovqat">Ovqat</option>
                     <option value="Yo'l">Yo'l</option>
                     <option value="Kiyim">Kiyim</option>
                     <option value="Kino">Kino</option>
                     <option value="Soglik">Sog'lik</option>
-                    <option value="Kommunal">Kommunal</option>
                     <option value="Aloqa">Aloqa</option>
                     <option value="Boshqa">Boshqa</option>
                 </select>
@@ -491,81 +158,63 @@
             </div>
             <div class="premium-input-group">
                 <label>Tranzaksiya Izohi (Nom ustuniga yoziladi)</label>
-                <input type="text" id="fin-operation-name" placeholder="Masalan: Bot orqali, Lichka (YK)">
+                <input type="text" id="fin-operation-name" placeholder="Masalan: Bot orqali test xarajat">
             </div>
-            <button class="btn-premium-submit" style="background: linear-gradient(135deg, #ec4899 0%, #f43f5e 100%); box-shadow: 0 8px 25px rgba(236,72,153,0.3);" onclick="submitFinanceOperation()">Saqlash</button>
+            <button class="btn-premium-submit" style="background: var(--accent-pink);" onclick="submitFinanceOperation()">Xarajatni Saqlash</button>
         </div>
     </div>
 
+    <!-- PAGE 5: MAQSADLAR -->
     <div id="page-goals" class="app-page">
         <div class="glass-premium-card">
             <div class="premium-input-group">
-                <label>Strategik Maqsam</label>
-                <input type="text" id="goal-title" placeholder="Masalan: SAT Math 780+ ball olish">
+                <label>Strategik Maqsad</label>
+                <input type="text" id="goal-title" placeholder="Masalan: SAT dan 1500+ ball">
             </div>
             <div class="premium-input-group">
                 <label>Progress foizi (0-100)</label>
-                <input type="number" id="goal-progress" placeholder="Masalan: 65">
+                <input type="number" id="goal-progress" placeholder="Masalan: 70">
             </div>
-            <button class="btn-premium-submit" style="background: linear-gradient(135deg, #8b5cf6 0%, #d946ef 100%); box-shadow: 0 8px 25px rgba(139,92,246,0.3);" onclick="submitNewGoal()">Katta maqsadni qo'shish</button>
+            <button class="btn-premium-submit" style="background: #8b5cf6;" onclick="submitNewGoal()">Maqsadni Qo'shish</button>
         </div>
-
-        <div class="section-header">Maqsadlar va Progress Circles</div>
+        <div class="section-header">Maqsadlar Progressi</div>
         <div id="goals-list-container"></div>
     </div>
 
+    <!-- FLOATING TAB BAR -->
     <div class="image_0c6934-tab-bar">
-        <button class="tab-item-premium active-premium-tab" onclick="switchTab('dashboard', this)">
-            <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f3e0/512.webp" alt="Asosiy">
-            <div>Asosiy</div>
-        </button>
-        <button class="tab-item-premium" onclick="switchTab('habits', this)">
-            <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f4aa_1f3fb/512.webp" alt="Odatlar">
-            <div>Odatlar</div>
-        </button>
-        <button class="tab-item-premium" onclick="switchTab('tasks', this)">
-            <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/2705/512.webp" alt="Vazifalar">
-            <div>Vazifalar</div>
-        </button>
-        <button class="tab-item-premium" onclick="switchTab('finance', this)">
-            <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f4b0/512.webp" alt="Moliya">
-            <div>Moliya</div>
-        </button>
-        <button class="tab-item-premium" onclick="switchTab('goals', this)">
-            <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f3af/512.webp" alt="Maqsadlar">
-            <div>Maqsadlar</div>
-        </button>
+        <button class="tab-item-premium active-premium-tab" onclick="switchTab('dashboard', this)"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f3e0/512.webp"><div>Asosiy</div></button>
+        <button class="tab-item-premium" onclick="switchTab('habits', this)"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f4aa_1f3fb/512.webp"><div>Odatlar</div></button>
+        <button class="tab-item-premium" onclick="switchTab('tasks', this)"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/2705/512.webp"><div>Vazifalar</div></button>
+        <button class="tab-item-premium" onclick="switchTab('finance', this)"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f4b0/512.webp"><div>Moliya</div></button>
+        <button class="tab-item-premium" onclick="switchTab('goals', this)"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f3af/512.webp"><div>Maqsadlar</div></button>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
 
+        // SheetDB API URL
         const SHEETDB_API_URL = "https://sheetdb.io/api/v1/oor0mxsj20xig";
+        
+        // Foydalanuvchi ma'lumotlari
         const telegramId = tg.initDataUnsafe?.user?.id ? String(tg.initDataUnsafe.user.id) : "6627458183";
         const firstName = tg.initDataUnsafe?.user?.first_name || "Yorqin";
 
         document.getElementById('db-user-name').innerText = "Salom, " + firstName + "!";
 
-        // Real vaqtni DD.MM.YYYY HH:MM formatida oluvchi yordamchi funksiya
+        // Google Sheets uchun to'g'ri vaqt formati (DD.MM.YYYY HH:MM)
         function getFormattedDate() {
             const now = new Date();
             const pad = (n) => n.toString().padStart(2, '0');
-            const day = pad(now.getDate());
-            const month = pad(now.getMonth() + 1);
-            const year = now.getFullYear();
-            const hours = pad(now.getHours());
-            const minutes = pad(now.getMinutes());
-            return `${day}.${month}.${year} ${hours}:${minutes}`;
+            return `${pad(now.getDate())}.${pad(now.getMonth() + 1)}.${now.getFullYear()} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
         }
 
         function switchTab(pageId, navButton) {
             document.querySelectorAll('.app-page').forEach(page => page.classList.remove('active-page'));
             document.querySelectorAll('.tab-item-premium').forEach(btn => btn.classList.remove('active-premium-tab'));
-
             document.getElementById('page-' + pageId).classList.add('active-page');
             navButton.classList.add('active-premium-tab');
-            
             tg.HapticFeedback.impactOccurred('medium');
             syncCoreData();
         }
@@ -575,129 +224,122 @@
             switchTab(pageId, btns[navIndex]);
         }
 
+        // BARCHA JADVAL MA'LUMOTLARINI SINXRONIZATSIYA QILISH
         async function syncCoreData() {
             try {
-                // Users Sheet Fetching
-                const userRes = await fetch(`${SHEETDB_API_URL}/search?telegram_id=${telegramId}&sheet=Users`);
-                const userData = await userRes.json();
-                if(userData && userData.length > 0) {
-                    document.getElementById('db-streak').innerText = (userData[0].xp_points ? Math.floor(parseInt(userData[0].xp_points)/10) + 15 : 15) + " kun";
+                // 1. ODATLARNI YUKLASH (Habits)
+                const habitRes = await fetch(`${SHEETDB_API_URL}/search?telegram_id=${telegramId}&sheet=Habits`);
+                const habitData = await habitRes.json();
+                const habitContainer = document.getElementById('habits-list-container');
+                habitContainer.innerHTML = "";
+                if(Array.isArray(habitData) && habitData.length > 0) {
+                    document.getElementById('db-streak').innerText = habitData.length + " ta";
+                    habitData.forEach(h => {
+                        habitContainer.innerHTML += `
+                            <div class="premium-row">
+                                <div class="row-left"><div class="row-icon-box">💪</div><div class="row-text"><h4>${h.habit_name}</h4><p>Xolati: ${h.last_completed}</p></div></div>
+                                <button class="btn-premium-action ${h.last_completed === 'Bajarildi' ? 'completed' : ''}" onclick="completeHabitAction(this, '${h.habit_name}')">${h.last_completed === 'Bajarildi' ? '✓ Done' : 'Bajarish'}</button>
+                            </div>`;
+                    });
+                } else {
+                    document.getElementById('db-streak').innerText = "0 ta";
+                    habitContainer.innerHTML = "<p style='text-align:center;color:var(--text-muted);font-size:13px;padding:20px;'>Odatlar yo'q. Yuqoridan yangi odat qo'shing!</p>";
                 }
 
-                // Finance (Sheet1) Analitika - Ustun nomlari 'Nik' (Summa) va 'Kategoriya' bo'yicha hisoblaydi
+                // 2. MOLIYA ANALITIKASI (Sheet1 - Xarajatlar)
                 const finRes = await fetch(`${SHEETDB_API_URL}?sheet=Sheet1`);
                 const finData = await finRes.json();
-                let income = 0, expense = 0;
-                if(finData && finData.length > 0) {
-                    finData.forEach(item => {
-                        let amt = parseFloat(item.Nik) || 0; // Nik ustunida summa joylashgan
-                        // Jadvalingizda hamma ma'lumot xarajat sifatida kiritilganini hisobga olib xarajatga qo'shadi
-                        expense += amt;
-                    });
+                let expense = 0;
+                if(Array.isArray(finData) && finData.length > 0) {
+                    finData.forEach(item => { expense += parseFloat(item.Nik) || 0; });
                 }
                 document.getElementById('db-expense').innerText = expense.toLocaleString('uz-UZ') + " UZS";
-                document.getElementById('db-income-log').innerText = income.toLocaleString('uz-UZ') + " UZS";
-                document.getElementById('fin-page-balance').innerText = (income - expense).toLocaleString('uz-UZ') + " UZS";
+                document.getElementById('fin-page-balance').innerText = expense.toLocaleString('uz-UZ') + " UZS";
 
-                // Tasks Syncing
+                // 3. VAZIFALARNI YUKLASH (Tasks)
                 const taskRes = await fetch(`${SHEETDB_API_URL}/search?telegram_id=${telegramId}&sheet=Tasks`);
                 const taskData = await taskRes.json();
                 const taskContainer = document.getElementById('tasks-list-container');
                 taskContainer.innerHTML = "";
                 let activeTasks = 0;
-                
-                if(taskData && taskData.length > 0) {
+                if(Array.isArray(taskData) && taskData.length > 0) {
                     taskData.forEach(t => {
                         if(t.status !== 'Bajarildi') {
                             activeTasks++;
                             taskContainer.innerHTML += `
                                 <div class="premium-row">
-                                    <div class="row-left">
-                                        <div class="row-icon-box">📌</div>
-                                        <div class="row-text"><h4>${t.task_title}</h4><p>Notion - Do it today</p></div>
-                                    </div>
+                                    <div class="row-left"><div class="row-icon-box">📌</div><div class="row-text"><h4>${t.task_title}</h4></div></div>
                                     <button class="btn-premium-action" onclick="completeTaskAction(this, '${t.task_title}')">Bajarildi</button>
                                 </div>`;
                         }
                     });
                 }
-                
-                if(activeTasks === 0) {
-                    taskContainer.innerHTML = `
-                        <div class="empty-state-container">
-                            <div class="empty-illustration">✨</div>
-                            <h4>Barcha vazifalar bajarildi</h4>
-                            <p>Bugun uchun reja qolmadi. Ajoyib ko'rsatkich!</p>
-                        </div>`;
-                }
                 document.getElementById('db-tasks').innerText = activeTasks + " ta";
+                if(activeTasks === 0) {
+                    taskContainer.innerHTML = "<p style='text-align:center;color:var(--text-muted);font-size:13px;padding:20px;'>Hozircha faol vazifalar yo'q.</p>";
+                }
 
-                // Goals Syncing with Progress Circles
+                // 4. MAQSADLARNI YUKLASH (Goals)
                 const goalRes = await fetch(`${SHEETDB_API_URL}/search?telegram_id=${telegramId}&sheet=Goals`);
                 const goalData = await goalRes.json();
                 const goalContainer = document.getElementById('goals-list-container');
                 goalContainer.innerHTML = "";
-                
-                let goalsCount = 0;
-                if(goalData && goalData.length > 0) {
-                    goalsCount = goalData.length;
+                if(Array.isArray(goalData) && goalData.length > 0) {
+                    document.getElementById('db-goals').innerText = goalData.length + " ta";
                     goalData.forEach(g => {
                         let pct = Math.min(Math.max(parseInt(g.progress_percent) || 0, 0), 100);
                         let strokeDash = (pct / 100) * 138;
                         goalContainer.innerHTML += `
                             <div class="widget-progress-container">
-                                <div style="display:flex; align-items:center; gap:12px;">
-                                    <span style="font-size:22px;">🎯</span>
-                                    <div><h4 style="font-size:15px; font-weight:600;">${g.goal_title}</h4><p style="font-size:12px; color:var(--text-muted);">Uzoq muddatli maqsad</p></div>
-                                </div>
-                                <div style="display:flex; align-items:center; gap:10px;">
-                                    <span style="font-weight:700; font-size:14px; color:#6366f1;">${pct}%</span>
-                                    <svg class="circle-svg">
-                                        <circle class="circle-bg" cx="24" cy="24" r="22"></circle>
-                                        <circle class="circle-fill" cx="24" cy="24" r="22" style="stroke-dasharray: ${strokeDash} 138;"></circle>
-                                    </svg>
+                                <div style="display:flex; align-items:center; gap:12px;"><span style="font-size:22px;">🎯</span><div><h4>${g.goal_title}</h4></div></div>
+                                <div style="display:flex; align-items:center; gap:10px;"><span style="font-weight:700;color:#6366f1;">${pct}%</span>
+                                    <svg class="circle-svg"><circle class="circle-bg" cx="24" cy="24" r="22"></circle><circle class="circle-fill" cx="24" cy="24" r="22" style="stroke-dasharray: ${strokeDash} 138;"></circle></svg>
                                 </div>
                             </div>`;
                     });
                 } else {
-                    goalsCount = 0;
-                    goalContainer.innerHTML = `
-                        <div class="empty-state-container">
-                            <div class="empty-illustration">🎯</div>
-                            <h4>Hozircha maqsadlar yo'q</h4>
-                            <p>Yangi maqsadlar qo'shing va o'sishni vizual kuzating.</p>
-                        </div>`;
+                    document.getElementById('db-goals').innerText = "0 ta";
+                    goalContainer.innerHTML = "<p style='text-align:center;color:var(--text-muted);font-size:13px;padding:20px;'>Maqsadlar mavjud emas.</p>";
                 }
-                document.getElementById('db-goals').innerText = goalsCount + " ta";
-
-            } catch (err) {
-                console.error("Xatolik yuz berdi:", err);
-            }
+            } catch (err) { console.error("Sinxronizatsiya xatosi:", err); }
         }
 
-        async function completeHabitAction(btn, habitName) {
-            if(btn.classList.contains('completed')) return;
-            tg.HapticFeedback.notificationOccurred('success');
-            btn.classList.add('completed'); btn.innerText = "✓ Done";
-
-            await fetch(`${SHEETDB_API_URL}`, {
+        // 1. ODAT QO'SHISH FUNKSIYASI
+        async function submitNewHabit() {
+            const title = document.getElementById('habit-title-input').value.trim();
+            if(!title) return tg.showAlert("Odat nomini kiriting!");
+            
+            document.getElementById('habit-title-input').value = "";
+            
+            await fetch(SHEETDB_API_URL, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
                     "sheet": "Habits",
-                    "data": [{"telegram_id": telegramId, "habit_name": habitName, "streak": "1", "last_completed": "Bugun"}]
+                    "data": [{"telegram_id": telegramId, "habit_name": title, "streak": "0", "last_completed": "Faol"}]
                 })
             });
-            syncCoreDate();
+            tg.showAlert("Yangi odat muvaffaqiyatli qo'shildi! 💪");
+            syncCoreData();
         }
 
-        async function submitNewTask() {
-            const title = document.getElementById('task-title').value;
-            if(!title) return;
-            tg.HapticFeedback.impactOccurred('medium');
-            document.getElementById('task-title').value = "";
+        async function completeHabitAction(btn, habitName) {
+            if(btn.classList.contains('completed')) return;
+            btn.classList.add('completed'); btn.innerText = "✓ Done";
+            await fetch(`${SHEETDB_API_URL}/habit_name/${encodeURIComponent(habitName)}?sheet=Habits`, {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({"data": {"last_completed": "Bajarildi"}})
+            });
+            syncCoreData();
+        }
 
-            await fetch(`${SHEETDB_API_URL}`, {
+        // 2. VAZIFA QO'SHISH FUNKSIYASI
+        async function submitNewTask() {
+            const title = document.getElementById('task-title').value.trim();
+            if(!title) return;
+            document.getElementById('task-title').value = "";
+            await fetch(SHEETDB_API_URL, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
@@ -709,9 +351,8 @@
         }
 
         async function completeTaskAction(btn, title) {
-            tg.HapticFeedback.notificationOccurred('success');
             btn.parentElement.remove();
-            await fetch(`${SHEETDB_API_URL}/task_title/${title}?sheet=Tasks`, {
+            await fetch(`${SHEETDB_API_URL}/task_title/${encodeURIComponent(title)}?sheet=Tasks`, {
                 method: 'PUT',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({"data": {"status": "Bajarildi"}})
@@ -719,63 +360,51 @@
             syncCoreData();
         }
 
-        // 100% TO'G'RILANGAN MOLIYA FUNKSIYASI (Aynan sening "Mening xarajatlarim" varag'ing uchun)
+        // 3. XARAJATLARNI JADVALGA SAQLASH FUNKSIYASI (Sheet1)
         async function submitFinanceOperation() {
             const category = document.getElementById('fin-operation-category').value;
             const amount = document.getElementById('fin-operation-amount').value;
-            const nameInput = document.getElementById('fin-operation-name').value || "Bot orqali";
+            const nameInput = document.getElementById('fin-operation-name').value.trim() || "Mini App xarajat";
 
-            if(!amount) {
-                tg.showAlert("Iltimos, summa miqdorini kiriting!");
-                return;
-            }
+            if(!amount) return tg.showAlert("Iltimos, summani kiriting!");
             
-            tg.HapticFeedback.notificationOccurred('success');
             document.getElementById('fin-operation-amount').value = "";
             document.getElementById('fin-operation-name').value = "";
 
-            // O'zbekcha haqiqiy ustun nomlari bilan payload tuzamiz
+            // O'zbekcha aniq ustun nomlari va sheet parametri birlashtirildi
             const payload = {
-                "sheet": "Sheet1", // Varaq nomi: Sheet1 (Mening xarajatlarim)
+                "sheet": "Sheet1",
                 "data": [
                     {
-                        "Sana": getFormattedDate(), // Masalan: 26.06.2026 18:30
-                        "Kategoriya": category,     // Masalan: Ovqat, Yo'l
-                        "Nom": nameInput,           // Masalan: Bot orqali
-                        "Nik": amount               // Summa 'Nik' ustuniga tushadi
+                        "Sana": getFormattedDate(),
+                        "Kategoriya": category,
+                        "Nom": nameInput,
+                        "Nik": amount,
+                        "telegram_id": telegramId
                     }
                 ]
             };
 
-            try {
-                const response = await fetch(`${SHEETDB_API_URL}`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(payload)
-                });
-                
-                if(response.ok) {
-                    tg.showAlert("Moliya tranzaksiyasi muvaffaqiyatli saqlandi! 📈🎉");
-                } else {
-                    console.error("SheetDB xatosi:", await response.text());
-                }
-            } catch (xato) {
-                console.error("Yuborishda xatolik:", xato);
-            }
+            await fetch(SHEETDB_API_URL, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(payload)
+            });
             
+            tg.showAlert("Xarajat jadvalga muvaffaqiyatli qo'shildi! 💸");
             syncCoreData();
         }
 
+        // 4. MAQSAD QO'SHISH FUNKSIYASI
         async function submitNewGoal() {
-            const title = document.getElementById('goal-title').value;
+            const title = document.getElementById('goal-title').value.trim();
             const progress = document.getElementById('goal-progress').value || "0";
-
-            if(!title) return;
-            tg.HapticFeedback.notificationOccurred('success');
+            if(!title) return tg.showAlert("Maqsad nomini kiriting!");
+            
             document.getElementById('goal-title').value = "";
             document.getElementById('goal-progress').value = "";
 
-            await fetch(`${SHEETDB_API_URL}`, {
+            await fetch(SHEETDB_API_URL, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
@@ -783,13 +412,12 @@
                     "data": [{"telegram_id": telegramId, "goal_title": title, "progress_percent": progress}]
                 })
             });
+            tg.showAlert("Maqsad jadvalga saqlandi! 🎯");
             syncCoreData();
         }
 
-        // Ilk yuklanganda ma'lumotlarni yangilash
-        window.onload = function() {
-            syncCoreData();
-        };
+        // Ilk yuklanganda ishga tushirish
+        window.onload = function() { syncCoreData(); };
     </script>
 </body>
 </html>
